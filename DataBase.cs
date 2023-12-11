@@ -1,6 +1,6 @@
 ﻿namespace Restaurant_Management;
 
-public class Table
+public class DataBase
 {
     public static void CreateTables(OracleConnection connection){
         connection.Open();

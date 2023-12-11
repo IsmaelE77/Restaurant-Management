@@ -6,7 +6,7 @@ public class Program
 
     public static void Main()
     {
-        Table.CreateTables(GetConnection());
+        DataBase.CreateTables(GetConnection());
     }
     public static OracleConnection GetConnection()
     {
