@@ -46,6 +46,8 @@ CREATE TABLE "Order" (
 
 CREATE TABLE Order_Item (
   Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  Quantity NUMBER(38),
+  Unit_Price Number(10,4),
   Order_Id NUMBER,
   Item_Id NUMBER
 );
@@ -53,8 +55,7 @@ CREATE TABLE Order_Item (
 CREATE TABLE "Table" (
   Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "Number" NUMBER(38),
-  Status  CHAR(1),
-  Employee_Id NUMBER
+  Status  VARCHAR2(100),
 );
 
 CREATE TABLE Receipt (
@@ -105,9 +106,6 @@ ALTER TABLE Employee
 
 ALTER TABLE Receipt
   ADD CONSTRAINT FK_Receipt_Table_Id FOREIGN KEY (Table_Id) REFERENCES "Table"(Id);
-
-ALTER TABLE "Table"
-  ADD CONSTRAINT FK_Table_Employee_Id FOREIGN KEY (Employee_Id) REFERENCES Employee(Id);
 
 ALTER TABLE Order_Item
   ADD CONSTRAINT FK_Order_Item_Item_Id FOREIGN KEY (Item_Id) REFERENCES Item(Id);

@@ -6,9 +6,7 @@ public class Program
 
     public static void Main()
     {
-        var con = GetConnection();
-        con.Open();
-        con.Close();
+        Table.CreateTables(GetConnection());
     }
     public static OracleConnection GetConnection()
     {
