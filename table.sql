@@ -3,7 +3,7 @@ CREATE TABLE Employee (
   Manager_Id NUMBER,
   First_Name VARCHAR2(100),
   Last_Name VARCHAR2(100),
-  Phone_Number NUMBER,
+  Phone_Number VARCHAR2(20),
   Adress VARCHAR2(255),
   Salary_per_Hour Number(10,4),
   Section_Id NUMBER
@@ -76,7 +76,7 @@ CREATE TABLE Category (
 CREATE TABLE Supplier (
   Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   Full_Name VARCHAR2(255),
-  Phone_Number NUMBER
+  Phone_Number VARCHAR2(20)
 );
 
 CREATE TABLE Ingredient (
