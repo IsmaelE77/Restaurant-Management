@@ -44,7 +44,6 @@ public class DataBase
 
         CreateTable(connection, "Order", @"
             Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            Item_Id NUMBER,
             ""Date"" TIMESTAMP,
             Price NUMBER(10,4),
             Employee_Id NUMBER,
