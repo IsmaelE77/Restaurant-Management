@@ -1,3 +1,6 @@
+using Restaurant_Management.Model;
+using Restaurant_Management.Repository;
+
 namespace Restaurant_Management;
 
 public class Program
@@ -6,7 +9,7 @@ public class Program
 
     public static void Main()
     {
-        DataBase.CreateTables(GetConnection());
+        Database.CreateTables(GetConnection());
     }
     public static OracleConnection GetConnection()
     {
