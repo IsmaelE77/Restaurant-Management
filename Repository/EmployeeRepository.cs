@@ -36,7 +36,7 @@ namespace Restaurant_Management.Repository
             string query = "SELECT * FROM \"Employee\"";
             using OracleCommand command = new(query, connection);
             using OracleDataReader reader = command.ExecuteReader();
-            List<Employee> employees = new List<Employee>();
+            List<Employee> employees = [];
 
             while (reader.Read())
             {
@@ -70,7 +70,7 @@ namespace Restaurant_Management.Repository
                 return;
             using OracleConnection connection = new(_connectionString);
             connection.Open();
-            using OracleCommand command = new OracleCommand("UPDATE \"Employee\" SET Manager_Id = :Manager_Id, First_Name = :First_Name, Last_Name = :Last_Name, " +
+            using OracleCommand command = new("UPDATE \"Employee\" SET Manager_Id = :Manager_Id, First_Name = :First_Name, Last_Name = :Last_Name, " +
                                                             "Phone_Number = :Phone_Number, Address = :Address, Salary_per_Hour = :Salary_per_Hour, Section_Id = :Section_Id " +
                                                             "WHERE Id = :Employee_Id", connection);
             command.Parameters.Add(new OracleParameter(":Manager_Id", employee.ManagerId ?? (object)DBNull.Value));
@@ -89,7 +89,7 @@ namespace Restaurant_Management.Repository
         {
             using OracleConnection connection = new(_connectionString);
             connection.Open();
-            using OracleCommand command = new OracleCommand("DELETE FROM \"Employee\" WHERE Id = :Employee_Id", connection);
+            using OracleCommand command = new("DELETE FROM \"Employee\" WHERE Id = :Employee_Id", connection);
             command.Parameters.Add(new OracleParameter(":Employee_Id", employeeId));
 
             command.ExecuteNonQuery();
