@@ -1,3 +1,5 @@
+using System.Data;
+
 namespace Restaurant_Management.Repository
 {
     public class OrderRepository : IOrder
@@ -9,26 +11,27 @@ namespace Restaurant_Management.Repository
             _connectionString = connectionString;
         }
 
-        public bool Add(Order order)
+        public int Add(Order order)
         {
             using OracleConnection connection = new(_connectionString);
             connection.Open();
             using OracleCommand command = new(
             "INSERT INTO \"Order\"(\"Date\", Price, Employee_Id, Table_Id, Receipt_Id) " +
-            "VALUES (:pDate, :pPrice, :pEmployeeId, :pTableId, :pReceiptId)", connection);
+            "VALUES (:pDate, :pPrice, :pEmployeeId, :pTableId, :pReceiptId) RETURNING Id into :Id", connection);
 
-            OracleParameter dateParam = new OracleParameter(":pDate", OracleDbType.TimeStamp);
+            OracleParameter dateParam = new(":pDate", OracleDbType.TimeStamp);
             dateParam.Value = order.Date;
             command.Parameters.Add(dateParam);
             command.Parameters.Add(new OracleParameter(":Price", order.Price));
             command.Parameters.Add(new OracleParameter(":EmployeeId", order.EmployeeId));
             command.Parameters.Add(new OracleParameter(":TableId", order.TableId));
             command.Parameters.Add(new OracleParameter(":ReceiptId", order.ReceiptId ?? (object)DBNull.Value));
-
-            int rowsAffected = command.ExecuteNonQuery();
-
-            // Check if any rows were affected
-            return rowsAffected > 0;
+            command.Parameters.Add(new OracleParameter(":ReceiptId", order.ReceiptId ?? (object)DBNull.Value));
+            OracleParameter IdParam = new(":Id",OracleDbType.Int32);
+            IdParam.Value =  ParameterDirection.ReturnValue;
+            command.Parameters.Add(IdParam);
+            command.ExecuteNonQuery();
+            return Convert.ToInt32(IdParam.Value.ToString());
         }
 
         public bool Remove(int orderId)

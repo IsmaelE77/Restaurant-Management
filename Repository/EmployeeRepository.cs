@@ -38,12 +38,12 @@ namespace Restaurant_Management.Repository
             }
         }
 
-        public bool Add(Employee employee)
+        public int Add(Employee employee)
         {
             using OracleConnection connection = new(_connectionString);
             connection.Open();
             using OracleCommand command = new("INSERT INTO \"Employee\" (Manager_Id, First_Name, Last_Name, Phone_Number, Address, Salary_per_Hour, Section_Id)"
-                + "VALUES (:Manager_Id, :First_Name, :Last_Name, :Phone_Number, :Address, :Salary_per_Hour, :Section_Id)", connection);
+                + "VALUES (:Manager_Id, :First_Name, :Last_Name, :Phone_Number, :Address, :Salary_per_Hour, :Section_Id) RETURNING Id into :Id", connection);
             // Set parameters based on your Employee model properties
             command.Parameters.Add(new OracleParameter(":Manager_Id", employee.ManagerId ?? (object)DBNull.Value));
             command.Parameters.Add(new OracleParameter(":First_Name", employee.FirstName));
@@ -52,8 +52,11 @@ namespace Restaurant_Management.Repository
             command.Parameters.Add(new OracleParameter(":Address", employee.Address));
             command.Parameters.Add(new OracleParameter(":Salary_per_Hour", employee.SalaryPerHour));
             command.Parameters.Add(new OracleParameter(":Section_Id", employee.SectionId));
-            // Execute the query
-            return command.ExecuteNonQuery() > 0;
+            OracleParameter IdParam = new(":Id",OracleDbType.Int32);
+            IdParam.Value =  ParameterDirection.ReturnValue;
+            command.Parameters.Add(IdParam);
+            command.ExecuteNonQuery();
+            return Convert.ToInt32(IdParam.Value.ToString());
         }
 
         public bool Update(Employee employee)
