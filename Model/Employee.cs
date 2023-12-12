@@ -20,6 +20,7 @@ public class Employee
     public decimal SalaryPerHour { get; set; }
     [Required(ErrorMessage = "{0} is required")]
     public int SectionId { get; set; }
+    public List<Employee_WorkDay> WorkDay { get; set; } = [];
 
     public override string ToString()
     {

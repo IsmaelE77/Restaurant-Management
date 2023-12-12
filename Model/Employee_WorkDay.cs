@@ -19,4 +19,6 @@ public class Employee_WorkDay()
     public string Note { get; set; } = "Nothing special";
     [Required(ErrorMessage = "{0} is required")]
     public int EmployeeId { get; set; }
+    public override string ToString() => $"Employee_WorkDay(Id: {Id}, Date: {Date:yyyy/MM/dd}, Starts: {Starts:HH:mm:ss}, " +
+        $"Ends: {Ends:HH:mm:ss}, WorkingHours: {WorkingHours}, Note: {Note}, EmployeeId: {EmployeeId})";
 }
