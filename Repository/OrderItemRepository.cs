@@ -1,5 +1,7 @@
 
 
+using System.Data;
+
 namespace Restaurant_Management.Repository
 {
     public class OrderItemRepository : IOrderItem
@@ -11,23 +13,23 @@ namespace Restaurant_Management.Repository
             _connectionString = connectionString;
         }
 
-        public bool Add(OrderItem orderItem)
+        public int Add(OrderItem orderItem)
         {
             using OracleConnection connection = new(_connectionString);
             connection.Open();
             using OracleCommand command = new(
                 "INSERT INTO \"Order_Item\" (Quantity, Unit_Price, Order_Id, Item_Id) " +
-                "VALUES (:Quantity, :UnitPrice, :OrderId, :ItemId)", connection);
+                "VALUES (:Quantity, :UnitPrice, :OrderId, :ItemId) RETURNING Id into :Id", connection);
 
             command.Parameters.Add(new OracleParameter(":Quantity", orderItem.Quantity));
             command.Parameters.Add(new OracleParameter(":UnitPrice", orderItem.UnitPrice));
             command.Parameters.Add(new OracleParameter(":OrderId", orderItem.OrderId));
             command.Parameters.Add(new OracleParameter(":ItemId", orderItem.ItemId));
-
-            int rowsAffected = command.ExecuteNonQuery();
-
-            // Check if any rows were affected
-            return rowsAffected > 0;
+            OracleParameter IdParam = new(":Id",OracleDbType.Int32);
+            IdParam.Value =  ParameterDirection.ReturnValue;
+            command.Parameters.Add(IdParam);
+            command.ExecuteNonQuery();
+            return Convert.ToInt32(IdParam.Value.ToString());
         }
 
         public bool Remove(int orderItemId)

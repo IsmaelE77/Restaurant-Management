@@ -1,13 +1,19 @@
-﻿namespace Restaurant_Management.Repository;
+﻿using System.Data;
+
+namespace Restaurant_Management.Repository;
 
 public class CategoryRepository(string connectionString) : ICategory
 {
-    public bool Add(Category category)
+    public int Add(Category category)
     {
         using var con = new OracleConnection(connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"insert into \"Category\"(Name) Values('{category.Name}')", con);
-        return cmd.ExecuteNonQuery() > 0;
+        using var cmd = new OracleCommand($"insert into \"Category\"(Name) Values('{category.Name}') RETURNING Id into :Id", con);
+        OracleParameter IdParam = new(":Id",OracleDbType.Int32);
+        IdParam.Value =  ParameterDirection.ReturnValue;
+        cmd.Parameters.Add(IdParam);
+        cmd.ExecuteNonQuery();
+        return Convert.ToInt32(IdParam.Value.ToString());
     }
     public int? GetId(string name)
     {
