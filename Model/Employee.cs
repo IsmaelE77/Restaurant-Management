@@ -16,7 +16,14 @@ public class Employee
     public string PhoneNumber { get; set; } = string.Empty;
     [StringLength(255, MinimumLength = 1, ErrorMessage = "Length of Address shouldn't exceed 100")]
     public string Address { get; set; } = string.Empty;
+    [Range(0, double.MaxValue, ErrorMessage = "Salary must be a non-negative value")]
     public decimal SalaryPerHour { get; set; }
     [Required(ErrorMessage = "{0} is required")]
     public int SectionId { get; set; }
+
+    public override string ToString()
+    {
+        return $"Employee(Id: {Id}, ManagerId: {ManagerId}, FirstName: {FirstName}, LastName: {LastName}, " +
+                $"PhoneNumber: {PhoneNumber}, Address: {Address}, SalaryPerHour: {SalaryPerHour}, SectionId: {SectionId})";
+    }
 }

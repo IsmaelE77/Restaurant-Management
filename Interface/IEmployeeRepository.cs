@@ -1,6 +1,3 @@
-using System;
-using Restaurant_Management.Model;
-
 namespace Restaurant_Management.Interface
 {
     public interface IEmployeeRepository

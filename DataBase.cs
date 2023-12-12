@@ -45,7 +45,7 @@ public class Database
         CreateTable(connection, "Order", @"
             Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
             ""Date"" TIMESTAMP,
-            Price NUMBER(10,4),
+            Price NUMBER(12,2),
             Employee_Id NUMBER,
             Table_Id NUMBER,
             Receipt_Id NUMBER"
@@ -68,10 +68,10 @@ public class Database
         CreateTable(connection, "Receipt", @"
             Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
             ""Date"" TIMESTAMP,
-            Sub_Total NUMBER(10,4),
+            Sub_Total NUMBER(12,2),
             Taxes NUMBER(10,4),
             Discount NUMBER(10,4),
-            Total NUMBER(10,4),
+            Total NUMBER(12,2),
             Table_Id NUMBER"
         );
 
@@ -89,7 +89,7 @@ public class Database
         CreateTable(connection, "Ingredient", @"
             Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
             Name VARCHAR2(255),
-            Price NUMBER(10,4),
+            Price NUMBER(12,2),
             Quantity NUMBER(38),
             Supplier_Id NUMBER"
         );
