@@ -1,14 +1,10 @@
-using System;
-using Restaurant_Management.Model;
+namespace Restaurant_Management.Interface;
 
-namespace Restaurant_Management.Interface
+public interface IEmployeeRepository
 {
-    public interface IEmployeeRepository
-    {
-        Employee? GetEmployee(int employeeId);
-        List<Employee> GetAllEmployees();
-        void AddEmployee(Employee employee);
-        void UpdateEmployee(Employee employee);
-        void DeleteEmployee(int employeeId);
-    }
+    Employee? GetEmployee(int employeeId);
+    List<Employee> GetAllEmployees();
+    void AddEmployee(Employee employee);
+    void UpdateEmployee(Employee employee);
+    void DeleteEmployee(int employeeId);
 }
