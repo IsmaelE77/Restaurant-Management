@@ -1,0 +1,133 @@
+CREATE TABLE Employee (
+  Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  Manager_Id NUMBER,
+  First_Name VARCHAR2(100),
+  Last_Name VARCHAR2(100),
+  Phone_Number VARCHAR2(20),
+  Adress VARCHAR2(255),
+  Salary_per_Hour Number(10,4),
+  Section_Id NUMBER
+);
+
+CREATE TABLE Employee_WorkDay (
+  Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "Date" DATE,
+  Starts TIMESTAMP,
+  Ends TIMESTAMP,
+  Working_Hours NUMBER(38),
+  Note VARCHAR2(255),
+  Employee_Id NUMBER
+);
+
+CREATE TABLE Section (
+  Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  Name VARCHAR2(100)
+);
+
+CREATE TABLE Item (
+  Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  Title VARCHAR2(50),
+  Description VARCHAR2(250),
+  Price Number(10,4),
+  Added TIMESTAMP,
+  Rating NUMBER(3,2),
+  Category_Id NUMBER
+);
+
+CREATE TABLE "Order" (
+  Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "Date" TIMESTAMP,
+  Price Number(10,4),
+  Employee_Id NUMBER,
+  Table_Id NUMBER,
+  Receipt_Id NUMBER
+);
+
+CREATE TABLE Order_Item (
+  Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  Quantity NUMBER(38),
+  Unit_Price Number(10,4),
+  Order_Id NUMBER,
+  Item_Id NUMBER
+);
+
+CREATE TABLE "Table" (
+  Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "Number" NUMBER(38),
+  Status  VARCHAR2(100),
+);
+
+CREATE TABLE Receipt (
+  Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "Date" TIMESTAMP,
+  Sub_Total Number(10,4),
+  Taxes Number(10,4),
+  Discount Number(10,4),
+  Total Number(10,4),
+  Table_Id NUMBER
+);
+
+CREATE TABLE Category (
+  Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  Name VARCHAR2(100)
+);
+
+CREATE TABLE Supplier (
+  Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  Full_Name VARCHAR2(255),
+  Phone_Number VARCHAR2(20)
+);
+
+CREATE TABLE Ingredient (
+  Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  Name VARCHAR2(255),
+  Price Number(10,4),
+  Quantity NUMBER(38),
+  Supplier_Id NUMBER
+);
+
+CREATE TABLE Item_Ingredient (
+  Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  Item_Id NUMBER,
+  Ingredient_Id NUMBER
+);
+
+
+ALTER TABLE Employee
+  ADD CONSTRAINT FK_Employee_Section_Id FOREIGN KEY (Section_Id) REFERENCES Section(Id);
+
+ALTER TABLE Employee_WorkDay
+  ADD CONSTRAINT FK_Employee_WorkDay_Employee_Id FOREIGN KEY (Employee_Id) REFERENCES Employee(Id);
+
+ALTER TABLE Employee
+  ADD CONSTRAINT FK_Employee_Manager_Id FOREIGN KEY (Manager_Id) REFERENCES Employee(Id);
+
+
+ALTER TABLE Receipt
+  ADD CONSTRAINT FK_Receipt_Table_Id FOREIGN KEY (Table_Id) REFERENCES "Table"(Id);
+
+ALTER TABLE Order_Item
+  ADD CONSTRAINT FK_Order_Item_Item_Id FOREIGN KEY (Item_Id) REFERENCES Item(Id);
+
+ALTER TABLE Order_Item
+  ADD CONSTRAINT FK_Order_Item_Order_Id FOREIGN KEY (Order_Id) REFERENCES "Order"(Id);
+
+ALTER TABLE "Order"
+  ADD CONSTRAINT FK_Order_Employee_Id FOREIGN KEY (Employee_Id) REFERENCES Employee(Id);
+
+ALTER TABLE "Order"
+  ADD CONSTRAINT FK_Order_Table_Id FOREIGN KEY (Table_Id) REFERENCES "Table"(Id);
+
+ALTER TABLE "Order"
+  ADD CONSTRAINT FK_Order_Receipt_Id FOREIGN KEY (Receipt_Id) REFERENCES Receipt(Id);
+
+ALTER TABLE Item
+  ADD CONSTRAINT FK_Item_Category_Id FOREIGN KEY (Category_Id) REFERENCES Category(Id);
+ALTER TABLE Ingredient
+  ADD CONSTRAINT FK_Ingredient_Supplier_Id FOREIGN KEY (Supplier_Id) REFERENCES Supplier(Id);
+
+ALTER TABLE Item_Ingredient
+  ADD CONSTRAINT FK_Item_Ingredient_Item_Id FOREIGN KEY (Item_Id) REFERENCES Item(Id);
+
+ALTER TABLE Item_Ingredient
+ADD CONSTRAINT FK_Item_Ingredient_Ingredient_Id FOREIGN KEY (Ingredient_Id) REFERENCES Ingredient(Id);
