@@ -1,16 +1,11 @@
+using Microsoft.VisualBasic;
 using System.Data;
 
 
 namespace Restaurant_Management.Repository
 {
-    public class EmployeeRepository : IEmployee
+    public class EmployeeRepository(string _connectionString) : IEmployee
     {
-        private readonly string _connectionString;
-        public EmployeeRepository(string connectionString)
-        {
-            _connectionString = connectionString;
-        }
-
         public Employee? Get(int employeeId)
         {
             using OracleConnection connection = new(_connectionString);
@@ -36,14 +31,11 @@ namespace Restaurant_Management.Repository
             string query = "SELECT * FROM \"Employee\"";
             using OracleCommand command = new(query, connection);
             using OracleDataReader reader = command.ExecuteReader();
-            List<Employee> employees = [];
 
             while (reader.Read())
             {
-                employees.Add(MapEmployeeFromReader(reader));
+                yield return MapEmployeeFromReader(reader);
             }
-
-            return employees;
         }
 
         public bool Add(Employee employee)
@@ -103,15 +95,24 @@ namespace Restaurant_Management.Repository
             return new Employee
             {
                 Id = Convert.ToInt32(reader["Id"]),
-                ManagerId = reader["Manager_Id"] != DBNull.Value ? Convert.ToInt32(reader["Manager_Id"]) : (int?)null,
-                FirstName = Convert.ToString(reader["First_Name"]),
-                LastName = Convert.ToString(reader["Last_Name"]),
-                PhoneNumber = Convert.ToString(reader["Phone_Number"]),
-                Address = Convert.ToString(reader["Address"]),
+                ManagerId = reader["Manager_Id"] != DBNull.Value ? Convert.ToInt32(reader["Manager_Id"]) : null,
+                FirstName = Convert.ToString(reader["First_Name"])?? "",
+                LastName = Convert.ToString(reader["Last_Name"])?? "",
+                PhoneNumber = Convert.ToString(reader["Phone_Number"])?? "",
+                Address = Convert.ToString(reader["Address"])?? "",
                 SalaryPerHour = Convert.ToDecimal(reader["Salary_per_Hour"]),
                 SectionId = Convert.ToInt32(reader["Section_Id"]),
             };
         }
 
+        public int GetTotalWorkingHours(int Id, DateTime? from = null, DateTime? to = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public decimal GetTheSalary(int Id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
