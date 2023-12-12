@@ -2,12 +2,12 @@
 
 public class SectionRepository(string connectionString) : ISection
 {
-    public int Add(Section section)
+    public bool Add(Section section)
     {
         using var con = new OracleConnection(connectionString);
         con.Open();
         using var cmd = new OracleCommand($"insert into \"Section\"(Name) Values('{section.Name}')", con);
-        return cmd.ExecuteNonQuery();
+        return cmd.ExecuteNonQuery() > 0;
     }
     public int? GetId(string name)
     {
@@ -38,27 +38,19 @@ public class SectionRepository(string connectionString) : ISection
             yield return new Section(id, name);
         }
     }
-    public int RemoveById(int Id)
+    public bool Remove(int Id)
     {
         using var con = new OracleConnection(connectionString);
         con.Open();
         using var cmd = new OracleCommand($"Delete from \"Section\" where Id='{Id}'", con);
-        return cmd.ExecuteNonQuery();
+        return cmd.ExecuteNonQuery() > 0;
     }
 
-    public int Remove(Section section)
-    {
-        using var con = new OracleConnection(connectionString);
-        con.Open();
-        using var cmd = new OracleCommand($"Delete from \"Section\" where Id='{section.Id}' and Name='{section.Name}'", con);
-        return cmd.ExecuteNonQuery();
-    }
-
-    public int Update(Section section)
+    public bool Update(Section section)
     {
         using var con = new OracleConnection(connectionString);
         con.Open();
         using var cmd = new OracleCommand($"Update \"Section\" Set Name='{section.Name}' where Id='{section.Id}'", con);
-        return cmd.ExecuteNonQuery();
+        return cmd.ExecuteNonQuery() > 0;
     }
 }
