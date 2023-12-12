@@ -3,7 +3,7 @@ using System.Data;
 
 namespace Restaurant_Management.Repository
 {
-    public class EmployeeRepository : IEmployeeRepository 
+    public class EmployeeRepository : IEmployee
     {
         private readonly string _connectionString;
         public EmployeeRepository(string connectionString)
@@ -11,7 +11,7 @@ namespace Restaurant_Management.Repository
             _connectionString = connectionString;
         }
 
-        public Employee? GetEmployee(int employeeId)
+        public Employee? Get(int employeeId)
         {
             using OracleConnection connection = new(_connectionString);
             connection.Open();
@@ -29,7 +29,7 @@ namespace Restaurant_Management.Repository
             return null;
         }
 
-        public List<Employee> GetAllEmployees()
+        public IEnumerable<Employee> GetAll()
         {
             using OracleConnection connection = new(_connectionString);
             connection.Open();
@@ -46,7 +46,7 @@ namespace Restaurant_Management.Repository
             return employees;
         }
 
-        public void AddEmployee(Employee employee)
+        public bool Add(Employee employee)
         {
             using OracleConnection connection = new(_connectionString);
             connection.Open();
@@ -61,13 +61,13 @@ namespace Restaurant_Management.Repository
             command.Parameters.Add(new OracleParameter(":Salary_per_Hour", employee.SalaryPerHour));
             command.Parameters.Add(new OracleParameter(":Section_Id", employee.SectionId));
             // Execute the query
-            command.ExecuteNonQuery();
+            return command.ExecuteNonQuery() > 0;
         }
 
-        public void UpdateEmployee(Employee employee)
+        public bool Update(Employee employee)
         {
             if(employee.Id == null)
-                return;
+                return false;
             using OracleConnection connection = new(_connectionString);
             connection.Open();
             using OracleCommand command = new("UPDATE \"Employee\" SET Manager_Id = :Manager_Id, First_Name = :First_Name, Last_Name = :Last_Name, " +
@@ -82,17 +82,17 @@ namespace Restaurant_Management.Repository
             command.Parameters.Add(new OracleParameter(":Section_Id", employee.SectionId));
             command.Parameters.Add(new OracleParameter(":Id", employee.Id)); // Assuming EmployeeId is the primary key
 
-            command.ExecuteNonQuery();
+            return command.ExecuteNonQuery() > 0;
         }
 
-        public void DeleteEmployee(int employeeId)
+        public bool Remove(int employeeId)
         {
             using OracleConnection connection = new(_connectionString);
             connection.Open();
             using OracleCommand command = new("DELETE FROM \"Employee\" WHERE Id = :Employee_Id", connection);
             command.Parameters.Add(new OracleParameter(":Employee_Id", employeeId));
 
-            command.ExecuteNonQuery();
+            return command.ExecuteNonQuery() > 0;
         }
 
 
@@ -112,6 +112,6 @@ namespace Restaurant_Management.Repository
                 SectionId = Convert.ToInt32(reader["Section_Id"]),
             };
         }
-    
+
     }
 }

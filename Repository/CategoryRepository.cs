@@ -2,12 +2,12 @@
 
 public class CategoryRepository(string connectionString) : ICategory
 {
-    public int Add(Category category)
+    public bool Add(Category category)
     {
         using var con = new OracleConnection(connectionString);
         con.Open();
         using var cmd = new OracleCommand($"insert into \"Category\"(Name) Values('{category.Name}')", con);
-        return cmd.ExecuteNonQuery();
+        return cmd.ExecuteNonQuery() > 0;
     }
     public int? GetId(string name)
     {
@@ -38,27 +38,19 @@ public class CategoryRepository(string connectionString) : ICategory
             yield return new Category(id, name);
         }
     }
-    public int RemoveById(int Id)
+    public bool Remove(int Id)
     {
         using var con = new OracleConnection(connectionString);
         con.Open();
         using var cmd = new OracleCommand($"Delete from \"Category\" where Id='{Id}'", con);
-        return cmd.ExecuteNonQuery();
+        return cmd.ExecuteNonQuery() > 0;
     }
 
-    public int Remove(Category category)
-    {
-        using var con = new OracleConnection(connectionString);
-        con.Open();
-        using var cmd = new OracleCommand($"Delete from \"Category\" where Id='{category.Id}' and Name='{category.Name}'", con);
-        return cmd.ExecuteNonQuery();
-    }
-
-    public int Update(Category category)
+    public bool Update(Category category)
     {
         using var con = new OracleConnection(connectionString);
         con.Open();
         using var cmd = new OracleCommand($"Update \"Category\" Set Name='{category.Name}' where Id='{category.Id}'", con);
-        return cmd.ExecuteNonQuery();
+        return cmd.ExecuteNonQuery() > 0;
     }
 }

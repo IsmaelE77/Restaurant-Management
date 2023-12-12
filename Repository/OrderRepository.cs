@@ -1,6 +1,6 @@
 namespace Restaurant_Management.Repository
 {
-    public class OrderRepository : IOrderRepository
+    public class OrderRepository : IOrder
     {
         private readonly string _connectionString;
 
@@ -31,7 +31,7 @@ namespace Restaurant_Management.Repository
             return rowsAffected > 0;
         }
 
-        public bool Delete(int orderId)
+        public bool Remove(int orderId)
         {
             using OracleConnection connection = new(_connectionString);
             connection.Open();
@@ -44,7 +44,7 @@ namespace Restaurant_Management.Repository
             return rowsAffected > 0;
         }
 
-        public List<Order> GetAll()
+        public IEnumerable<Order> GetAll()
         {
             using OracleConnection connection = new(_connectionString);
             connection.Open();
@@ -60,7 +60,7 @@ namespace Restaurant_Management.Repository
 
             return orders;
         }
-        public List<Order> GetAllByEmploye(int employeeId)
+        public IEnumerable<Order> GetAllByEmploye(int employeeId)
         {
             List<Order> orders = new List<Order>();
 
@@ -82,7 +82,7 @@ namespace Restaurant_Management.Repository
             return orders;
         }
 
-        public List<Order> GetAllByEmployeeAndYear(int employeeId, int year)
+        public IEnumerable<Order> GetAllByEmployeeAndYear(int employeeId, int year)
         {
             List<Order> orders = [];
 
