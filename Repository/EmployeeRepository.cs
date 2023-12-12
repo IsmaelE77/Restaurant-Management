@@ -1,6 +1,5 @@
 using System.Data;
-using Restaurant_Management.Model;
-using Restaurant_Management.Repository.Interface;
+
 
 namespace Restaurant_Management.Repository
 {

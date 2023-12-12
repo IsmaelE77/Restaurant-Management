@@ -1,6 +1,3 @@
-using Restaurant_Management.Model;
-using Restaurant_Management.Repository;
-
 namespace Restaurant_Management;
 
 public class Program
