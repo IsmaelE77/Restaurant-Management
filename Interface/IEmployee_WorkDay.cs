@@ -1,6 +1,6 @@
 ﻿namespace Restaurant_Management.Interface;
 
-public interface IEmployee_WorkDay : ISpecial<Employee_WorkDay>
+public interface IEmployee_WorkDay : ICRUD<Employee_WorkDay>
 {
 
 }
