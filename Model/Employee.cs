@@ -3,9 +3,8 @@ namespace Restaurant_Management.Model;
 public class Employee
 {
     [Key]
-    public int Id { get; set; }
-    [Required(ErrorMessage = "{0} is required")]
-    public int ManagerId { get; set; }
+    public int? Id { get; set; }
+    public int? ManagerId { get; set; }
     [Required(ErrorMessage = "{0} is required")]
     [StringLength(100, MinimumLength = 1, ErrorMessage = "Length of FirstName shouldn't exceed 100")]
     public string FirstName { get; set; } = string.Empty;
