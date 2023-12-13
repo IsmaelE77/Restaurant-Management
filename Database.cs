@@ -116,7 +116,6 @@ public class Database
         AddForeignKeyConstraint(connection, "Order", "FK_Order_Table_Id", "Table_Id", "Table", "Id");
         AddForeignKeyConstraint(connection, "Order", "FK_Order_Receipt_Id", "Receipt_Id", "Receipt", "Id");
         AddForeignKeyConstraint(connection, "Item", "FK_Item_Category_Id", "Category_Id", "Category", "Id");
-        AddForeignKeyConstraint(connection, "Ingredient", "FK_Ingredient_Supplier_Id", "Supplier_Id", "Supplier", "Id");
         AddForeignKeyConstraint(connection, "Item_Ingredient", "FK_Item_Ingredient_Item_Id", "Item_Id", "Item", "Id");
         AddForeignKeyConstraint(connection, "Item_Ingredient", "FK_Item_Ingredient_Ingredient_Id", "Ingredient_Id", "Ingredient", "Id");
         AddForeignKeyConstraint(connection, "Supplier_Ingredient", "FK_Supplier_Ingredient_Ingredient_Id", "Ingredient_Id", "Ingredient", "Id");
