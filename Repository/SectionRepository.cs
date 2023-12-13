@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace Restaurant_Management.Repository;
+﻿namespace Restaurant_Management.Repository;
 
 public class SectionRepository(string connectionString) : ISection
 {
