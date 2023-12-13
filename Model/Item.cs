@@ -1,4 +1,5 @@
 using System;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Restaurant_Management.Model
 {
@@ -11,10 +12,10 @@ namespace Restaurant_Management.Model
         public DateTime Added { get; set; } 
         public int Rating { get; set; }
         public int CategoryId { get; set; }
-
+        public List<Item_Ingredient> Item_Ingredients { get; set; } = [];
         public override string ToString()
         {
-            return $"Id: {Id}, Title: {Title}, Description: {Description}, Price: {Price}, Added: {Added}, Rating: {Rating}, CategoryId: {CategoryId}";
+            return $"Id: {Id}, Title: {Title}, Description: {Description}, Price: {Price}, Added: {Added:yyyy/MM/dd}, Rating: {Rating}, CategoryId: {CategoryId}";
         }
     }
 }
