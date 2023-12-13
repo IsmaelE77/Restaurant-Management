@@ -138,5 +138,18 @@ namespace Restaurant_Management.Repository
             };
         }
 
+        public bool RemoveByOrderId(int OrderId)
+        {
+            using OracleConnection connection = new(_connectionString);
+            connection.Open();
+            using OracleCommand command = new("DELETE FROM \"Order_Item\" WHERE Order_Id = :OrderId", connection);
+            command.Parameters.Add(new OracleParameter(":OrderId", OrderId));
+
+
+            int rowsAffected = command.ExecuteNonQuery();
+
+            // Check if any rows were affected
+            return rowsAffected > 0;
+        }
     }
 }

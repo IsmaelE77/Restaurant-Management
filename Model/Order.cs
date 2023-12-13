@@ -29,15 +29,15 @@ namespace Restaurant_Management.Model
         {
             if (OrderItems != null && OrderItems.Count > 0)
             {
-                var orderItemsString = "[";
+                var orderItemsString = "\n[";
 
                 foreach (var orderItem in OrderItems)
                 {
-                    orderItemsString += orderItem.ToString();
+                    orderItemsString += "\n"+"   "+ orderItem.ToString();
                 }
 
                 // Remove the trailing comma and space
-                orderItemsString = orderItemsString.TrimEnd(',', ' ') + "]";
+                orderItemsString = orderItemsString.TrimEnd(',', ' ') + "\n]";
                 
                 return orderItemsString;
             }
