@@ -3,9 +3,9 @@ namespace Restaurant_Management.Repository
     public class OrderRepository : IOrder
     {
         private readonly string _connectionString;
-        private readonly OrderItemRepository _orderItemRepository;
+        private readonly IOrderItem _orderItemRepository;
 
-        public OrderRepository(string connectionString, OrderItemRepository orderItemRepository)
+        public OrderRepository(string connectionString, IOrderItem orderItemRepository)
         {
             _connectionString = connectionString;
             _orderItemRepository = orderItemRepository;
