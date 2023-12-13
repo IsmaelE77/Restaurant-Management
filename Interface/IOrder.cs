@@ -4,5 +4,6 @@ namespace Restaurant_Management.Interface
     {
         IEnumerable<Order> GetAllByEmploye(int EmployeeId);
         IEnumerable<Order> GetAllByEmployeeAndYear(int employeeId, int year);
+
     }
 }

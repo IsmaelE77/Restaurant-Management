@@ -3,14 +3,18 @@ namespace Restaurant_Management.Repository
     public class OrderRepository : IOrder
     {
         private readonly string _connectionString;
+        private readonly IOrderItem _orderItemRepository;
 
-        public OrderRepository(string connectionString)
+        public OrderRepository(string connectionString, IOrderItem orderItemRepository)
         {
             _connectionString = connectionString;
+            _orderItemRepository = orderItemRepository;
         }
 
         public bool Add(Order order)
         {
+            if(order.OrderItems == null || order.OrderItems.Count < 1)
+                return false;
             using OracleConnection connection = new(_connectionString);
             connection.Open();
             using OracleCommand command = new(
@@ -32,6 +36,10 @@ namespace Restaurant_Management.Repository
             command.Parameters.Add(IdParam);
             var result = command.ExecuteNonQuery();
             order.Id = Convert.ToInt32(IdParam.Value.ToString());
+            foreach(var orderItem in order.OrderItems){
+                orderItem.OrderId = order.Id.Value;
+                _orderItemRepository.Add(orderItem);
+            }
             return result > 0;
         }
 
@@ -41,9 +49,8 @@ namespace Restaurant_Management.Repository
             connection.Open();
             using OracleCommand command = new("DELETE FROM \"Order\" WHERE Id = :OrderId", connection);
             command.Parameters.Add(new OracleParameter(":OrderId", orderId));
-
+            _orderItemRepository.RemoveByOrderId(orderId);
             int rowsAffected = command.ExecuteNonQuery();
-
             // Check if any rows were affected
             return rowsAffected > 0;
         }
@@ -66,7 +73,7 @@ namespace Restaurant_Management.Repository
         }
         public IEnumerable<Order> GetAllByEmploye(int employeeId)
         {
-            List<Order> orders = new List<Order>();
+            List<Order> orders = [];
 
             using OracleConnection connection = new(_connectionString);
 
@@ -129,6 +136,8 @@ namespace Restaurant_Management.Repository
         {
             if(order.Id == null)
                 return false;
+            if(order.OrderItems == null|| order.OrderItems.Count < 1)
+                return false;
             using OracleConnection connection = new(_connectionString);
             connection.Open();
             using OracleCommand command = new(
@@ -151,13 +160,20 @@ namespace Restaurant_Management.Repository
             command.Parameters.Add(new OracleParameter(":pOrderId", order.Id));
 
             int rowsAffected = command.ExecuteNonQuery();
+            foreach(var orderItem in order.OrderItems){
+                orderItem.OrderId = order.Id.Value;
+                if(_orderItemRepository.Get(orderItem.Id) == null)
+                    _orderItemRepository.Add(orderItem);
+                else
+                    _orderItemRepository.Update(orderItem);
+            }
             // Check if any rows were affected
             return rowsAffected > 0;
         }
 
         private Order MapOrderFromReader(OracleDataReader reader)
         {
-            return new Order
+            Order order = new()
             {
                 Id = Convert.ToInt32(reader["Id"]),
                 Date = Convert.ToDateTime(reader["\"Date\""]),
@@ -166,6 +182,8 @@ namespace Restaurant_Management.Repository
                 TableId = Convert.ToInt32(reader["Table_Id"]),
                 ReceiptId = reader["Receipt_Id"] != DBNull.Value ? Convert.ToInt32(reader["Receipt_Id"]) : (int?)null,
             };
+            order.OrderItems = _orderItemRepository.GetAllByOrder(order.Id.Value).ToList();
+            return order;
         }
     }
 }

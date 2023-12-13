@@ -21,7 +21,7 @@ public class Supplier_IngredientRepository(string connectionString) : ISupplier_
     {
         using var con = new OracleConnection(connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Select * from Supplier_Ingredient where Id='{Id}'", con);
+        using var cmd = new OracleCommand($"Select * from \"Supplier_Ingredient\" where Id='{Id}'", con);
         using var reader = cmd.ExecuteReader();
         reader.Read();
         var price = reader.GetDecimal(reader.GetOrdinal("Price"));
@@ -35,7 +35,7 @@ public class Supplier_IngredientRepository(string connectionString) : ISupplier_
     {
         using var con = new OracleConnection(connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Select * from Supplier_Ingredient", con);
+        using var cmd = new OracleCommand($"Select * from \"Supplier_Ingredient\"", con);
         using var reader = cmd.ExecuteReader();
         while (reader.Read())
         {
@@ -52,7 +52,7 @@ public class Supplier_IngredientRepository(string connectionString) : ISupplier_
     {
         using var con = new OracleConnection(connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Select * from Supplier_Ingredient where Ingredient_Id='{Ingredient_Id}'", con);
+        using var cmd = new OracleCommand($"Select * from \"Supplier_Ingredient\" where Ingredient_Id='{Ingredient_Id}'", con);
         using var reader = cmd.ExecuteReader();
         while (reader.Read())
         {
@@ -69,7 +69,7 @@ public class Supplier_IngredientRepository(string connectionString) : ISupplier_
     {
         using var con = new OracleConnection(connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Select * from Supplier_Ingredient where Supplier_Id='{Supplier_Id}'", con);
+        using var cmd = new OracleCommand($"Select * from \"Supplier_Ingredient\" where Supplier_Id='{Supplier_Id}'", con);
         using var reader = cmd.ExecuteReader();
         while (reader.Read())
         {
@@ -86,7 +86,7 @@ public class Supplier_IngredientRepository(string connectionString) : ISupplier_
     {
         using var con = new OracleConnection(connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Select Price from Supplier_Ingredient where Supplier_Id='{Supplier_Id}'", con);
+        using var cmd = new OracleCommand($"Select Price from \"Supplier_Ingredient\" where Supplier_Id='{Supplier_Id}'", con);
         using var reader = cmd.ExecuteReader();
         decimal total = 0;
         while (reader.Read())
@@ -100,7 +100,7 @@ public class Supplier_IngredientRepository(string connectionString) : ISupplier_
     {
         using var con = new OracleConnection(connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Select Quantity from Supplier_Ingredient where Ingredient_Id='{Ingredient_Id}'", con);
+        using var cmd = new OracleCommand($"Select Quantity from \"Supplier_Ingredient\" where Ingredient_Id='{Ingredient_Id}'", con);
         using var reader = cmd.ExecuteReader();
         int total = 0;
         while (reader.Read())
@@ -114,7 +114,7 @@ public class Supplier_IngredientRepository(string connectionString) : ISupplier_
     {
         using var con = new OracleConnection(connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Delete from Supplier_Ingredient where Id='{Id}'", con);
+        using var cmd = new OracleCommand($"Delete from \"Supplier_Ingredient\" where Id='{Id}'", con);
         return cmd.ExecuteNonQuery() > 0;
     }
 
@@ -122,7 +122,7 @@ public class Supplier_IngredientRepository(string connectionString) : ISupplier_
     {
         using var con = new OracleConnection(connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Update Supplier_Ingredient  Set Price='{item.Price}', " +
+        using var cmd = new OracleCommand($"Update \"Supplier_Ingredient\"  Set Price='{item.Price}', " +
             $"Quantity='{item.Quantity}', Supplier_Id='{item.Supplier_Id}', Ingredient_Id='{item.Ingredient_Id}'" +
             $" where Id='{item.Id}'", con);
         return cmd.ExecuteNonQuery() > 0;

@@ -110,6 +110,28 @@ namespace Restaurant_Management.Repository
                 SectionId = Convert.ToInt32(reader["Section_Id"]),
             };
         }
+        public decimal GetTotalSalesForEmployeeInYear(int employeeId, int year)
+        {
+            using OracleConnection connection = new(_connectionString);
+            connection.Open();
+
+            using OracleCommand command = new(
+                $"SELECT SUM(Price) AS TotalSales " +
+                $"FROM \"Order\" " +
+                $"WHERE EXTRACT(YEAR FROM \"Date\") = :year AND Employee_Id = :employeeId", connection);
+            command.Parameters.Add("year", OracleDbType.Int32).Value = year;
+            command.Parameters.Add("employeeId", OracleDbType.Int32).Value = employeeId;
+
+            object result = command.ExecuteScalar();
+
+            if (result != null && result != DBNull.Value)
+            {
+                return Convert.ToDecimal(result);
+            }
+
+            return 0m; // If no sales found, return zero.
+        }
+
 
         public int GetTotalWorkingHours(int Id, DateTime? from = null, DateTime? to = null)
         {

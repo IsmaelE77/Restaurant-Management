@@ -89,15 +89,20 @@ public class Database
         CreateTable(connection, "Ingredient", @"
             Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
             Name VARCHAR2(255),
-            Price NUMBER(12,2),
-            Quantity NUMBER(38),
-            Supplier_Id NUMBER"
+            Quantity NUMBER(12,2)"
         );
 
         CreateTable(connection, "Item_Ingredient", @"
             Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
             Item_Id NUMBER,
             Ingredient_Id NUMBER"
+        );
+        CreateTable(connection, "Supplier_Ingredient", @"
+            Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            Ingredient_Id NUMBER,
+            Supplier_Id NUMBER,
+            Quantity NUMBER(38),
+            Price NUMBER(12,2)"
         );
 
         // Add foreign key constraints if they don't exist
@@ -111,9 +116,10 @@ public class Database
         AddForeignKeyConstraint(connection, "Order", "FK_Order_Table_Id", "Table_Id", "Table", "Id");
         AddForeignKeyConstraint(connection, "Order", "FK_Order_Receipt_Id", "Receipt_Id", "Receipt", "Id");
         AddForeignKeyConstraint(connection, "Item", "FK_Item_Category_Id", "Category_Id", "Category", "Id");
-        AddForeignKeyConstraint(connection, "Ingredient", "FK_Ingredient_Supplier_Id", "Supplier_Id", "Supplier", "Id");
         AddForeignKeyConstraint(connection, "Item_Ingredient", "FK_Item_Ingredient_Item_Id", "Item_Id", "Item", "Id");
         AddForeignKeyConstraint(connection, "Item_Ingredient", "FK_Item_Ingredient_Ingredient_Id", "Ingredient_Id", "Ingredient", "Id");
+        AddForeignKeyConstraint(connection, "Supplier_Ingredient", "FK_Supplier_Ingredient_Ingredient_Id", "Ingredient_Id", "Ingredient", "Id");
+        AddForeignKeyConstraint(connection, "Supplier_Ingredient", "FK_Supplier_Ingredient_Supplier_Id", "Supplier_Id", "Supplier", "Id");
 
         connection.Close();
         
