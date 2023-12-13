@@ -47,18 +47,18 @@ namespace Restaurant_Management
 
         public void SeedData()
         {
-            SeedEmployees();
             SeedSections();
+            SeedEmployees();
+            SeedEmployeeWorkDays();
+            SeedCategories();
             SeedItems();
             SeedTables();
-            SeedCategories();
             SeedSuppliers();
             SeedIngredients();
-            SeedEmployeeWorkDays();
-            SeedOrders();
-            SeedOrderItems();
             SeedSupplierIngredients();
             //SeedItemIngredients();
+            SeedOrders();
+            SeedOrderItems();
         }
 
         private void SeedEmployees()
