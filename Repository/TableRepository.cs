@@ -25,7 +25,7 @@ public class TableRepository(string connectionString) : ITable
         using var reader = cmd.ExecuteReader();
         reader.Read();
         var number = reader.GetInt32(reader.GetOrdinal("\"Number\""));
-        var status = reader.GetInt32(reader.GetOrdinal("Status"));
+        var status = reader.GetString(reader.GetOrdinal("Status"));
         return new(number, Id, status);
     }
 
@@ -39,7 +39,7 @@ public class TableRepository(string connectionString) : ITable
         {
             int id = reader.GetInt32(reader.GetOrdinal("Id"));
             var number = reader.GetInt32(reader.GetOrdinal("\"Number\""));
-            var status = reader.GetInt32(reader.GetOrdinal("Status"));
+            var status = reader.GetString(reader.GetOrdinal("Status"));
             yield return new(number, id, status);
         }
     }
@@ -54,7 +54,7 @@ public class TableRepository(string connectionString) : ITable
         {
             int id = reader.GetInt32(reader.GetOrdinal("Id"));
             var number = reader.GetInt32(reader.GetOrdinal("\"Number\""));
-            var status = reader.GetInt32(reader.GetOrdinal("Status"));
+            var status = reader.GetString(reader.GetOrdinal("Status"));
             yield return new(number, id, status);
         }
     }
@@ -62,7 +62,7 @@ public class TableRepository(string connectionString) : ITable
     public bool IsAvailable(int Id)
     {
         var table = Get(Id);
-        return table?.Status == 0;
+        return String.Compare(table?.Status, "Available", comparisonType: StringComparison.OrdinalIgnoreCase) == 0;
     }
 
     public bool Remove(int Id)
