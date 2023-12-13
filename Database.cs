@@ -106,20 +106,20 @@ public class Database
         );
 
         // Add foreign key constraints if they don't exist
-        AddForeignKeyConstraint(connection, "Employee", "FK_Employee_Section_Id", "Section_Id", "Section", "Id");
-        AddForeignKeyConstraint(connection, "Employee_WorkDay", "FK_Employee_WorkDay_Employee_Id", "Employee_Id", "Employee", "Id");
-        AddForeignKeyConstraint(connection, "Employee", "FK_Employee_Manager_Id", "Manager_Id", "Employee", "Id");
-        AddForeignKeyConstraint(connection, "Receipt", "FK_Receipt_Table_Id", "Table_Id", "Table", "Id");
-        AddForeignKeyConstraint(connection, "Order_Item", "FK_Order_Item_Item_Id", "Item_Id", "Item", "Id");
-        AddForeignKeyConstraint(connection, "Order_Item", "FK_Order_Item_Order_Id", "Order_Id", "Order", "Id");
-        AddForeignKeyConstraint(connection, "Order", "FK_Order_Employee_Id", "Employee_Id", "Employee", "Id");
-        AddForeignKeyConstraint(connection, "Order", "FK_Order_Table_Id", "Table_Id", "Table", "Id");
-        AddForeignKeyConstraint(connection, "Order", "FK_Order_Receipt_Id", "Receipt_Id", "Receipt", "Id");
-        AddForeignKeyConstraint(connection, "Item", "FK_Item_Category_Id", "Category_Id", "Category", "Id");
-        AddForeignKeyConstraint(connection, "Item_Ingredient", "FK_Item_Ingredient_Item_Id", "Item_Id", "Item", "Id");
-        AddForeignKeyConstraint(connection, "Item_Ingredient", "FK_Item_Ingredient_Ingredient_Id", "Ingredient_Id", "Ingredient", "Id");
-        AddForeignKeyConstraint(connection, "Supplier_Ingredient", "FK_Supplier_Ingredient_Ingredient_Id", "Ingredient_Id", "Ingredient", "Id");
-        AddForeignKeyConstraint(connection, "Supplier_Ingredient", "FK_Supplier_Ingredient_Supplier_Id", "Supplier_Id", "Supplier", "Id");
+        AddForeignKeyConstraint(connection, "Employee", "FK_Employee_Section_Id", "Section_Id", "Section", "Id",false);
+        AddForeignKeyConstraint(connection, "Employee_WorkDay", "FK_Employee_WorkDay_Employee_Id", "Employee_Id", "Employee", "Id",false);
+        AddForeignKeyConstraint(connection, "Employee", "FK_Employee_Manager_Id", "Manager_Id", "Employee", "Id",false);
+        AddForeignKeyConstraint(connection, "Receipt", "FK_Receipt_Table_Id", "Table_Id", "Table", "Id",false);
+        AddForeignKeyConstraint(connection, "Order_Item", "FK_Order_Item_Item_Id", "Item_Id", "Item", "Id",false);
+        AddForeignKeyConstraint(connection, "Order_Item", "FK_Order_Item_Order_Id", "Order_Id", "Order", "Id",true);
+        AddForeignKeyConstraint(connection, "Order", "FK_Order_Employee_Id", "Employee_Id", "Employee", "Id",false);
+        AddForeignKeyConstraint(connection, "Order", "FK_Order_Table_Id", "Table_Id", "Table", "Id",false);
+        AddForeignKeyConstraint(connection, "Order", "FK_Order_Receipt_Id", "Receipt_Id", "Receipt", "Id",true);
+        AddForeignKeyConstraint(connection, "Item", "FK_Item_Category_Id", "Category_Id", "Category", "Id",false);
+        AddForeignKeyConstraint(connection, "Item_Ingredient", "FK_Item_Ingredient_Item_Id", "Item_Id", "Item", "Id",false);
+        AddForeignKeyConstraint(connection, "Item_Ingredient", "FK_Item_Ingredient_Ingredient_Id", "Ingredient_Id", "Ingredient", "Id",false);
+        AddForeignKeyConstraint(connection, "Supplier_Ingredient", "FK_Supplier_Ingredient_Ingredient_Id", "Ingredient_Id", "Ingredient", "Id",false);
+        AddForeignKeyConstraint(connection, "Supplier_Ingredient", "FK_Supplier_Ingredient_Supplier_Id", "Supplier_Id", "Supplier", "Id",false);
 
         connection.Close();
         
@@ -146,11 +146,15 @@ public class Database
         }
     }
 
-    private static void AddForeignKeyConstraint(OracleConnection connection, string tableName, string constraintName, string columnName, string referencedTable, string referencedColumnName)
+    private static void AddForeignKeyConstraint(OracleConnection connection, string tableName, string constraintName, string columnName, string referencedTable, string referencedColumnName , bool OnDeleteCascade)
     {
         if (!ForeignKeyConstraintExists(connection, tableName, constraintName))
         {
-            string addForeignKeyQuery = $"ALTER TABLE \"{tableName}\" ADD CONSTRAINT {constraintName} FOREIGN KEY ({columnName}) REFERENCES \"{referencedTable}\"({referencedColumnName})";
+            string addForeignKeyQuery;
+            if(OnDeleteCascade)
+                addForeignKeyQuery = $"ALTER TABLE \"{tableName}\" ADD CONSTRAINT {constraintName} FOREIGN KEY ({columnName}) REFERENCES \"{referencedTable}\"({referencedColumnName}) ON DELETE CASCADE";
+            else
+                addForeignKeyQuery = $"ALTER TABLE \"{tableName}\" ADD CONSTRAINT {constraintName} FOREIGN KEY ({columnName}) REFERENCES \"{referencedTable}\"({referencedColumnName})";
             ExecuteQuery(connection, addForeignKeyQuery);
         }else{
             Console.WriteLine($"constraint {constraintName} found before");

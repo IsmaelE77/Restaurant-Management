@@ -49,9 +49,7 @@ namespace Restaurant_Management.Repository
             connection.Open();
             using OracleCommand command = new("DELETE FROM \"Order\" WHERE Id = :OrderId", connection);
             command.Parameters.Add(new OracleParameter(":OrderId", orderId));
-            _orderItemRepository.RemoveByOrderId(orderId);
             int rowsAffected = command.ExecuteNonQuery();
-            // Check if any rows were affected
             return rowsAffected > 0;
         }
 
