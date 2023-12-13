@@ -1,6 +1,6 @@
 ﻿namespace Restaurant_Management.Model;
 
-public class Table(int _Number, int? _Id = null, String _Status = "Available")
+public class Table(int _Number, int? _Id = null, string _Status = "Available")
 {
     [Key]
     public int? Id { get; set; } = _Id;

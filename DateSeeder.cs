@@ -172,17 +172,45 @@ namespace Restaurant_Management
 
         private void SeedTables()
         {
-
+            for (int i = 1; i <= 4; i++)
+            {
+                _tableRepository.Add(new Table(_Number:i, _Status: i % 2 == 0? "Available" : "Unavailable"));
+            }
         }
 
         private void SeedCategories()
         {
-
+            var temp = new Category(_Name: "Appetizers");
+            _categoryRepository.Add(temp);
+            Console.WriteLine($"1 Row has been added to the database\n{temp}");
+            temp = new Category(_Name: "Sides");
+            _categoryRepository.Add(temp);
+            Console.WriteLine($"1 Row has been added to the database\n{temp}");
+            temp = new Category(_Name: "Mains");
+            _categoryRepository.Add(temp);
+            Console.WriteLine($"1 Row has been added to the database\n{temp}");
+            temp = new Category(_Name: "Desserts");
+            _categoryRepository.Add(temp);
+            Console.WriteLine($"1 Row has been added to the database\n{temp}");
+            temp = new Category(_Name: "Drinks");
+            _categoryRepository.Add(temp);
+            Console.WriteLine($"1 Row has been added to the database\n{temp}");
         }
 
         private void SeedSuppliers()
         {
-
+            var temp = new Supplier(_Total:200000490.45m ,_FullName: "Abu_Andrew", _PhoneNumber:"0946145738");
+            _supplierRepository.Add(temp);
+            Console.WriteLine($"1 Row has been added to the database\n{temp}");
+            temp = new Supplier(_Total: 94384378999.43m, _FullName: "Mr_Sure21", _PhoneNumber: "0965490736");
+            _supplierRepository.Add(temp);
+            Console.WriteLine($"1 Row has been added to the database\n{temp}");
+            temp = new Supplier(_Total: 24448436.43m, _FullName: "Ismael", _PhoneNumber: "0933987231");
+            _supplierRepository.Add(temp);
+            Console.WriteLine($"1 Row has been added to the database\n{temp}");
+            temp = new Supplier(_Total: 9459834999.43m, _FullName: "Abu_Yasser", _PhoneNumber: "0999823453");
+            _supplierRepository.Add(temp);
+            Console.WriteLine($"1 Row has been added to the database\n{temp}");
         }
 
         private void SeedIngredients()
