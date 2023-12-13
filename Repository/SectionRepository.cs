@@ -4,16 +4,19 @@ namespace Restaurant_Management.Repository;
 
 public class SectionRepository(string connectionString) : ISection
 {
-    public int Add(Section section)
+    public bool Add(Section section)
     {
         using var con = new OracleConnection(connectionString);
         con.Open();
         using var cmd = new OracleCommand($"insert into \"Section\"(Name) Values('{section.Name}') RETURNING Id into :Id", con);
-        OracleParameter IdParam = new(":Id",OracleDbType.Int32);
-        IdParam.Value =  ParameterDirection.ReturnValue;
+        OracleParameter IdParam = new(":Id", OracleDbType.Int32)
+        {
+            Value = ParameterDirection.ReturnValue
+        };
         cmd.Parameters.Add(IdParam);
-        cmd.ExecuteNonQuery();
-        return Convert.ToInt32(IdParam.Value.ToString());
+        int result = cmd.ExecuteNonQuery();
+        section.Id = Convert.ToInt32(IdParam.Value.ToString());
+        return result > 0;
     }
     public int? GetId(string name)
     {

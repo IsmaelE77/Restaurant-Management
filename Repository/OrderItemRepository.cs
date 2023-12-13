@@ -13,7 +13,7 @@ namespace Restaurant_Management.Repository
             _connectionString = connectionString;
         }
 
-        public int Add(OrderItem orderItem)
+        public bool Add(OrderItem orderItem)
         {
             using OracleConnection connection = new(_connectionString);
             connection.Open();
@@ -25,11 +25,14 @@ namespace Restaurant_Management.Repository
             command.Parameters.Add(new OracleParameter(":UnitPrice", orderItem.UnitPrice));
             command.Parameters.Add(new OracleParameter(":OrderId", orderItem.OrderId));
             command.Parameters.Add(new OracleParameter(":ItemId", orderItem.ItemId));
-            OracleParameter IdParam = new(":Id",OracleDbType.Int32);
-            IdParam.Value =  ParameterDirection.ReturnValue;
+            OracleParameter IdParam = new(":Id", OracleDbType.Int32)
+            {
+                Value = ParameterDirection.ReturnValue
+            };
             command.Parameters.Add(IdParam);
-            command.ExecuteNonQuery();
-            return Convert.ToInt32(IdParam.Value.ToString());
+            orderItem.Id = Convert.ToInt32(IdParam.Value.ToString());
+            var result = command.ExecuteNonQuery();
+            return result > 0;
         }
 
         public bool Remove(int orderItemId)

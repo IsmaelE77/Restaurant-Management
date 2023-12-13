@@ -38,7 +38,7 @@ namespace Restaurant_Management.Repository
             }
         }
 
-        public int Add(Employee employee)
+        public bool Add(Employee employee)
         {
             using OracleConnection connection = new(_connectionString);
             connection.Open();
@@ -52,11 +52,14 @@ namespace Restaurant_Management.Repository
             command.Parameters.Add(new OracleParameter(":Address", employee.Address));
             command.Parameters.Add(new OracleParameter(":Salary_per_Hour", employee.SalaryPerHour));
             command.Parameters.Add(new OracleParameter(":Section_Id", employee.SectionId));
-            OracleParameter IdParam = new(":Id",OracleDbType.Int32);
-            IdParam.Value =  ParameterDirection.ReturnValue;
+            OracleParameter IdParam = new(":Id", OracleDbType.Int32)
+            {
+                Value = ParameterDirection.ReturnValue
+            };
             command.Parameters.Add(IdParam);
-            command.ExecuteNonQuery();
-            return Convert.ToInt32(IdParam.Value.ToString());
+            employee.Id = Convert.ToInt32(IdParam.Value.ToString());
+            var result = command.ExecuteNonQuery();
+            return result > 0;
         }
 
         public bool Update(Employee employee)

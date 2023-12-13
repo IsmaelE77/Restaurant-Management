@@ -1,6 +1,6 @@
 ﻿namespace Restaurant_Management.Interface;
 
-public interface ICategory : ICRUD<Category>
+public interface ICategory : ICrud<Category>
 {
     public int? GetId(string name);
 }
