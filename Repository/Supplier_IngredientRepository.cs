@@ -6,13 +6,23 @@ public class Supplier_IngredientRepository(string connectionString) : ISupplier_
     {
         using var con = new OracleConnection(connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"insert into Supplier_Ingredient(Ingredient_Id, Supplier_Id, Quantity, Price) Values('{item.Ingredient_Id}', '{item.Supplier_Id}', '{item.Quantity}', '{item.Price}') RETURNING Id into :Id", con);
-        OracleParameter IdParam = new(":Id", OracleDbType.Int32)
+        using OracleCommand command = new OracleCommand(
+            "INSERT INTO \"Supplier_Ingredient\"(Ingredient_Id, Supplier_Id, \"Date\", Quantity, Price) " +
+            "VALUES (:pIngredientId, :pSupplierId, :pDate, :pQuantity, :pPrice) RETURNING Id INTO :pId", con);
+
+        command.Parameters.Add(new OracleParameter(":pIngredientId", item.Ingredient_Id));
+        command.Parameters.Add(new OracleParameter(":pSupplierId", item.Supplier_Id));
+        OracleParameter dateParam = new(":pDate", OracleDbType.TimeStamp);
+        dateParam.Value = item.Date;
+        command.Parameters.Add(dateParam);
+        command.Parameters.Add(new OracleParameter(":pQuantity", item.Quantity));
+        command.Parameters.Add(new OracleParameter(":pPrice", item.Price));
+        OracleParameter IdParam = new(":pId", OracleDbType.Int32)
         {
             Value = ParameterDirection.ReturnValue
         };
-        cmd.Parameters.Add(IdParam);
-        int result = cmd.ExecuteNonQuery();
+        command.Parameters.Add(IdParam);
+        int result = command.ExecuteNonQuery();
         item.Id = Convert.ToInt32(IdParam.Value.ToString());
         return result > 0;
     }
@@ -28,7 +38,12 @@ public class Supplier_IngredientRepository(string connectionString) : ISupplier_
         var quantity = reader.GetInt32(reader.GetOrdinal("Quantity"));
         var sup_Id = reader.GetInt32(reader.GetOrdinal("Supplier_Id"));
         var ing_Id = reader.GetInt32(reader.GetOrdinal("Ingredient_Id"));
-        return new(Id, price, quantity, sup_Id, ing_Id);
+        var date = Convert.ToDateTime(reader["\"Date\""]);
+        var supplier_Ingredient = new Supplier_Ingredient(Id, price, quantity, sup_Id, ing_Id)
+        {
+            Date = date
+        };
+        return supplier_Ingredient;
     }
 
     public IEnumerable<Supplier_Ingredient> GetAll()
@@ -44,7 +59,12 @@ public class Supplier_IngredientRepository(string connectionString) : ISupplier_
             var quantity = reader.GetInt32(reader.GetOrdinal("Quantity"));
             var sup_Id = reader.GetInt32(reader.GetOrdinal("Supplier_Id"));
             var ing_Id = reader.GetInt32(reader.GetOrdinal("Ingredient_Id"));
-            yield return new(Id, price, quantity, sup_Id, ing_Id);
+            var date = Convert.ToDateTime(reader["\"Date\""]);
+            var supplier_Ingredient = new Supplier_Ingredient(Id, price, quantity, sup_Id, ing_Id)
+            {
+                Date = date
+            };
+            yield return supplier_Ingredient;
         }
     }
 
@@ -61,7 +81,12 @@ public class Supplier_IngredientRepository(string connectionString) : ISupplier_
             var quantity = reader.GetInt32(reader.GetOrdinal("Quantity"));
             var sup_Id = reader.GetInt32(reader.GetOrdinal("Supplier_Id"));
             var ing_Id = reader.GetInt32(reader.GetOrdinal("Ingredient_Id"));
-            yield return new(Id, price, quantity, sup_Id, ing_Id);
+            var date = Convert.ToDateTime(reader["\"Date\""]);
+            var supplier_Ingredient = new Supplier_Ingredient(Id, price, quantity, sup_Id, ing_Id)
+            {
+                Date = date
+            };
+            yield return supplier_Ingredient;
         }
     }
 
@@ -78,7 +103,12 @@ public class Supplier_IngredientRepository(string connectionString) : ISupplier_
             var quantity = reader.GetInt32(reader.GetOrdinal("Quantity"));
             var sup_Id = reader.GetInt32(reader.GetOrdinal("Supplier_Id"));
             var ing_Id = reader.GetInt32(reader.GetOrdinal("Ingredient_Id"));
-            yield return new(Id, price, quantity, sup_Id, ing_Id);
+            var date = Convert.ToDateTime(reader["\"Date\""]);
+            var supplier_Ingredient = new Supplier_Ingredient(Id, price, quantity, sup_Id, ing_Id)
+            {
+                Date = date
+            };
+            yield return supplier_Ingredient;
         }
     }
 

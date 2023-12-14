@@ -9,100 +9,101 @@ public class Database
         CreateTable(connection, "Employee", @"
             Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
             Manager_Id NUMBER,
-            First_Name VARCHAR2(100),
-            Last_Name VARCHAR2(100),
-            Phone_Number VARCHAR2(20),
-            Address VARCHAR2(255),
-            Salary_per_Hour NUMBER(10,4),
-            Section_Id NUMBER"
+            First_Name VARCHAR2(100) NOT NULL,
+            Last_Name VARCHAR2(100) NOT NULL,
+            Phone_Number VARCHAR2(20) NOT NULL,
+            Address VARCHAR2(255) NOT NULL,
+            Salary_per_Hour NUMBER(10,4) NOT NULL,
+            Section_Id NUMBER NOT NULL"
         );
 
         CreateTable(connection, "Employee_WorkDay", @"
             Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
             ""Date"" DATE,
-            Starts TIMESTAMP,
-            Ends TIMESTAMP,
-            Working_Hours NUMBER(38),
+            Starts TIMESTAMP NOT NULL,
+            Ends TIMESTAMP NOT NULL,
+            Working_Hours NUMBER(38) NOT NULL,
             Note VARCHAR2(255),
-            Employee_Id NUMBER"
+            Employee_Id NUMBER NOT NULL"
         );
 
         CreateTable(connection, "Section", @"
             Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            Name VARCHAR2(100)"
+            Name VARCHAR2(100) NOT NULL UNIQUE"
         );
 
         CreateTable(connection, "Item", @"
             Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            Title VARCHAR2(50),
+            Title VARCHAR2(50) NOT NULL,
             Description VARCHAR2(250),
-            Price NUMBER(10,4),
-            Added TIMESTAMP,
+            Price NUMBER(10,4) NOT NULL,
+            Added TIMESTAMP NOT NULL,
             Rating NUMBER(3,2),
-            Category_Id NUMBER"
+            Category_Id NUMBER NOT NULL"
         );
 
         CreateTable(connection, "Order", @"
             Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            ""Date"" TIMESTAMP,
-            Price NUMBER(12,2),
-            Employee_Id NUMBER,
-            Table_Id NUMBER,
+            ""Date"" TIMESTAMP NOT NULL,
+            Price NUMBER(12,2) NOT NULL,
+            Employee_Id NUMBER NOT NULL,
+            Table_Id NUMBER NOT NULL,
             Receipt_Id NUMBER"
         );
 
         CreateTable(connection, "Order_Item", @"
             Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            Quantity NUMBER(38),
-            Unit_Price NUMBER(10,4),
-            Order_Id NUMBER,
-            Item_Id NUMBER"
+            Quantity NUMBER(38) NOT NULL,
+            Unit_Price NUMBER(10,4) NOT NULL,
+            Order_Id NUMBER NOT NULL,
+            Item_Id NUMBER NOT NULL"
         );
 
         CreateTable(connection, "Table", @"
             Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            ""Number"" NUMBER(38),
-            Status VARCHAR2(100)"
+            ""Number"" NUMBER(38) NOT NULL UNIQUE,
+            Status VARCHAR2(100) NOT NULL"
         );
 
         CreateTable(connection, "Receipt", @"
             Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            ""Date"" TIMESTAMP,
+            ""Date"" TIMESTAMP NOT NULL,
             Sub_Total NUMBER(12,2),
-            Taxes NUMBER(10,4),
-            Discount NUMBER(10,4),
-            Total NUMBER(12,2),
-            Table_Id NUMBER"
+            Taxes NUMBER(10,4) NOT NULL,
+            Discount NUMBER(10,4) NOT NULL,
+            Total NUMBER(12,2) NOT NULL,
+            Table_Id NUMBER NOT NULL"
         );
 
         CreateTable(connection, "Category", @"
             Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            Name VARCHAR2(100)"
+            Name VARCHAR2(100) NOT NULL UNIQUE"
         );
 
         CreateTable(connection, "Supplier", @"
             Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            Full_Name VARCHAR2(255),
-            Phone_Number VARCHAR2(20)"
+            Full_Name VARCHAR2(255) NOT NULL,
+            Phone_Number VARCHAR2(20) NOT NULL"
         );
 
         CreateTable(connection, "Ingredient", @"
             Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            Name VARCHAR2(255),
-            Quantity NUMBER(12,2)"
+            Name VARCHAR2(255) NOT NULL UNIQUE,
+            Quantity NUMBER(12,2) NOT NULL"
         );
 
         CreateTable(connection, "Item_Ingredient", @"
             Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            Item_Id NUMBER,
-            Ingredient_Id NUMBER"
+            Item_Id NUMBER NOT NULL,
+            Ingredient_Id NUMBER NOT NULL"
         );
         CreateTable(connection, "Supplier_Ingredient", @"
             Id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            Ingredient_Id NUMBER,
-            Supplier_Id NUMBER,
-            Quantity NUMBER(38),
-            Price NUMBER(12,2)"
+            Ingredient_Id NUMBER NOT NULL,
+            Supplier_Id NUMBER NOT NULL,
+            ""Date"" TIMESTAMP NOT NULL,
+            Quantity NUMBER(38) NOT NULL,
+            Price NUMBER(12,2) NOT NULL"
         );
 
         // Add foreign key constraints if they don't exist

@@ -14,8 +14,8 @@ public class CategoryRepository(string connectionString) : ICategory
             Value = ParameterDirection.ReturnValue
         };
         cmd.Parameters.Add(IdParam);
-        category.Id = Convert.ToInt32(IdParam.Value.ToString());
         var result = cmd.ExecuteNonQuery();
+        category.Id = Convert.ToInt32(IdParam.Value.ToString());
         return result > 0;
     }
     public int? GetId(string name)
