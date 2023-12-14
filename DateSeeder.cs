@@ -5,7 +5,7 @@ namespace Restaurant_Management
     public class DataSeeder
     {
         private readonly IEmployee _employeeRepository;
-        private readonly IEmployee_WorkDay _employeeWorkDayRepository;
+        //private readonly IEmployee_WorkDay _employeeWorkDayRepository;
         private readonly ISection _sectionRepository;
         private readonly IItem _itemRepository;
         private readonly IOrder _orderRepository;
@@ -14,12 +14,12 @@ namespace Restaurant_Management
         private readonly ICategory _categoryRepository;
         private readonly ISupplier _supplierRepository;
         private readonly IIngredient _ingredientRepository;
-        //private readonly IIte _itemIngredientRepository;
+        private readonly IItem_Ingredient _itemIngredientRepository;
         private readonly ISupplier_Ingredient _supplierIngredientRepository;
 
         public DataSeeder(
             IEmployee employeeRepository,
-            IEmployee_WorkDay employeeWorkDayRepository,
+            //IEmployee_WorkDay employeeWorkDayRepository,
             ISection sectionRepository,
             IItem itemRepository,
             IOrder orderRepository,
@@ -28,11 +28,11 @@ namespace Restaurant_Management
             ICategory categoryRepository,
             ISupplier supplierRepository,
             IIngredient ingredientRepository,
-           // ICrud<Item_Ingredient> itemIngredientRepository,
+            IItem_Ingredient itemIngredientRepository,
             ISupplier_Ingredient supplierIngredientRepository)
         {
             _employeeRepository = employeeRepository;
-            _employeeWorkDayRepository = employeeWorkDayRepository;
+            //_employeeWorkDayRepository = employeeWorkDayRepository;
             _sectionRepository = sectionRepository;
             _itemRepository = itemRepository;
             _orderRepository = orderRepository;
@@ -41,7 +41,7 @@ namespace Restaurant_Management
             _categoryRepository = categoryRepository;
             _supplierRepository = supplierRepository;
             _ingredientRepository = ingredientRepository;
-            //_itemIngredientRepository = itemIngredientRepository;
+            _itemIngredientRepository = itemIngredientRepository;
             _supplierIngredientRepository = supplierIngredientRepository;
         }
 
@@ -49,16 +49,28 @@ namespace Restaurant_Management
         {
             SeedSections();
             SeedEmployees();
-            SeedEmployeeWorkDays();
+            //SeedEmployeeWorkDays();
             SeedCategories();
             SeedItems();
             SeedTables();
             SeedSuppliers();
             SeedIngredients();
             SeedSupplierIngredients();
-            //SeedItemIngredients();
+            SeedItemIngredients();
             SeedOrders();
             SeedOrderItems();
+        }
+
+        private void SeedItemIngredients()
+        {
+            _itemIngredientRepository.Add(new Item_Ingredient { Item_Id = 1, Ingredient_Id = 1 });
+            _itemIngredientRepository.Add(new Item_Ingredient { Item_Id = 1, Ingredient_Id = 3 });
+            _itemIngredientRepository.Add(new Item_Ingredient { Item_Id = 2, Ingredient_Id = 3 });
+            _itemIngredientRepository.Add(new Item_Ingredient { Item_Id = 2, Ingredient_Id = 4 });
+            _itemIngredientRepository.Add(new Item_Ingredient { Item_Id = 3, Ingredient_Id = 1 });
+            _itemIngredientRepository.Add(new Item_Ingredient { Item_Id = 3, Ingredient_Id = 2 });
+            _itemIngredientRepository.Add(new Item_Ingredient { Item_Id = 4, Ingredient_Id = 3 });
+            _itemIngredientRepository.Add(new Item_Ingredient { Item_Id = 4, Ingredient_Id = 4 });
         }
 
         private void SeedEmployees()
@@ -199,16 +211,16 @@ namespace Restaurant_Management
 
         private void SeedSuppliers()
         {
-            var temp = new Supplier(_Total:200000490.45m ,_FullName: "Abu_Andrew", _PhoneNumber:"0946145738");
+            var temp = new Supplier(_FullName: "Abu_Andrew", _PhoneNumber:"0946145738");
             _supplierRepository.Add(temp);
             Console.WriteLine($"1 Row has been added to the database\n{temp}");
-            temp = new Supplier(_Total: 94384378999.43m, _FullName: "Mr_Sure21", _PhoneNumber: "0965490736");
+            temp = new Supplier(_FullName: "Mr_Sure21", _PhoneNumber: "0965490736");
             _supplierRepository.Add(temp);
             Console.WriteLine($"1 Row has been added to the database\n{temp}");
-            temp = new Supplier(_Total: 24448436.43m, _FullName: "Ismael", _PhoneNumber: "0933987231");
+            temp = new Supplier(_FullName: "Ismael", _PhoneNumber: "0933987231");
             _supplierRepository.Add(temp);
             Console.WriteLine($"1 Row has been added to the database\n{temp}");
-            temp = new Supplier(_Total: 9459834999.43m, _FullName: "Abu_Yasser", _PhoneNumber: "0999823453");
+            temp = new Supplier(_FullName: "Abu_Yasser", _PhoneNumber: "0999823453");
             _supplierRepository.Add(temp);
             Console.WriteLine($"1 Row has been added to the database\n{temp}");
         }
@@ -240,48 +252,48 @@ namespace Restaurant_Management
             });
         }
 
-        private void SeedEmployeeWorkDays()
-        {
-            _employeeWorkDayRepository.Add(new Employee_WorkDay
-            {
-                Date = DateTime.Now.Date,
-                Starts = DateTime.Now.Date.AddHours(9),
-                Ends = DateTime.Now.Date.AddHours(17),
-                WorkingHours = 8,
-                Note = "Regular workday",
-                EmployeeId = 1
-            });
+        // private void SeedEmployeeWorkDays()
+        // {
+        //     _employeeWorkDayRepository.Add(new Employee_WorkDay
+        //     {
+        //         Date = DateTime.Now.Date,
+        //         Starts = DateTime.Now.Date.AddHours(9),
+        //         Ends = DateTime.Now.Date.AddHours(17),
+        //         WorkingHours = 8,
+        //         Note = "Regular workday",
+        //         EmployeeId = 1
+        //     });
 
-            _employeeWorkDayRepository.Add(new Employee_WorkDay
-            {
-                Date = DateTime.Now.Date.AddDays(-1),
-                Starts = DateTime.Now.Date.AddDays(-1).AddHours(11),
-                Ends = DateTime.Now.Date.AddDays(-1).AddHours(19),
-                WorkingHours = 8,
-                Note = "Evening shift",
-                EmployeeId = 2
-            });
+        //     _employeeWorkDayRepository.Add(new Employee_WorkDay
+        //     {
+        //         Date = DateTime.Now.Date.AddDays(-1),
+        //         Starts = DateTime.Now.Date.AddDays(-1).AddHours(11),
+        //         Ends = DateTime.Now.Date.AddDays(-1).AddHours(19),
+        //         WorkingHours = 8,
+        //         Note = "Evening shift",
+        //         EmployeeId = 2
+        //     });
 
-            _employeeWorkDayRepository.Add(new Employee_WorkDay
-            {
-                Date = DateTime.Now.Date.AddDays(-2),
-                Starts = DateTime.Now.Date.AddDays(-2).AddHours(8),
-                Ends = DateTime.Now.Date.AddDays(-2).AddHours(16),
-                WorkingHours = 8,
-                Note = "Morning shift",
-                EmployeeId = 3
-            });
+        //     _employeeWorkDayRepository.Add(new Employee_WorkDay
+        //     {
+        //         Date = DateTime.Now.Date.AddDays(-2),
+        //         Starts = DateTime.Now.Date.AddDays(-2).AddHours(8),
+        //         Ends = DateTime.Now.Date.AddDays(-2).AddHours(16),
+        //         WorkingHours = 8,
+        //         Note = "Morning shift",
+        //         EmployeeId = 3
+        //     });
 
-            _employeeWorkDayRepository.Add(new Employee_WorkDay
-            {
-                Date = DateTime.Now.Date.AddDays(-3),
-                Starts = DateTime.Now.Date.AddDays(-3).AddHours(10),
-                Ends = DateTime.Now.Date.AddDays(-3).AddHours(18),
-                WorkingHours = 8,
-                Note = "Regular workday",
-                EmployeeId = 4
-            });
-        }
+        //     _employeeWorkDayRepository.Add(new Employee_WorkDay
+        //     {
+        //         Date = DateTime.Now.Date.AddDays(-3),
+        //         Starts = DateTime.Now.Date.AddDays(-3).AddHours(10),
+        //         Ends = DateTime.Now.Date.AddDays(-3).AddHours(18),
+        //         WorkingHours = 8,
+        //         Note = "Regular workday",
+        //         EmployeeId = 4
+        //     });
+        // }
 
         private void SeedOrders()
         {
@@ -290,8 +302,7 @@ namespace Restaurant_Management
                 Date = DateTime.Now,
                 Price = 25.99m,
                 EmployeeId = 1,
-                TableId = 1,
-                ReceiptId = 1
+                TableId = 1
             });
 
             _orderRepository.Add(new Order
@@ -299,8 +310,7 @@ namespace Restaurant_Management
                 Date = DateTime.Now.AddDays(-1),
                 Price = 15.49m,
                 EmployeeId = 2,
-                TableId = 2,
-                ReceiptId = 2
+                TableId = 2
             });
 
             _orderRepository.Add(new Order
@@ -308,8 +318,7 @@ namespace Restaurant_Management
                 Date = DateTime.Now.AddDays(-2),
                 Price = 32.99m,
                 EmployeeId = 3,
-                TableId = 3,
-                ReceiptId = 3
+                TableId = 3
             });
 
             _orderRepository.Add(new Order
@@ -317,8 +326,7 @@ namespace Restaurant_Management
                 Date = DateTime.Now.AddDays(-3),
                 Price = 18.50m,
                 EmployeeId = 4,
-                TableId = 4,
-                ReceiptId = 4
+                TableId = 4
             });
         }
 
@@ -363,16 +371,50 @@ namespace Restaurant_Management
             {
                 Ingredient_Id = 1,
                 Supplier_Id = 1,
+                Date = DateTime.Now,
                 Quantity = 10,
-                Price = 50.0m
+                Price = 50445.03m
             });
 
             _supplierIngredientRepository.Add(new Supplier_Ingredient
             {
-                Ingredient_Id = 2,
+                Ingredient_Id = 4,
                 Supplier_Id = 2,
+                Date = DateTime.Now,
                 Quantity = 5,
                 Price = 20.0m
+            });
+            _supplierIngredientRepository.Add(new Supplier_Ingredient
+            {
+                Ingredient_Id = 2,
+                Supplier_Id = 3,
+                Date = DateTime.Now,
+                Quantity = 5,
+                Price = 23453.4m
+            });
+            _supplierIngredientRepository.Add(new Supplier_Ingredient
+            {
+                Ingredient_Id = 3,
+                Supplier_Id = 3,
+                Date = DateTime.Now,
+                Quantity = 5,
+                Price = 234530.0m
+            });
+            _supplierIngredientRepository.Add(new Supplier_Ingredient
+            {
+                Ingredient_Id = 2,
+                Supplier_Id = 3,
+                Date = DateTime.Now,
+                Quantity = 5,
+                Price = 20435.0m
+            });
+            _supplierIngredientRepository.Add(new Supplier_Ingredient
+            {
+                Ingredient_Id = 1,
+                Supplier_Id = 2,
+                Date = DateTime.Now,
+                Quantity = 5,
+                Price = 22340.0m
             });
         }
     }

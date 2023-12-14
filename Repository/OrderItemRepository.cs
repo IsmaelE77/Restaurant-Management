@@ -30,8 +30,8 @@ namespace Restaurant_Management.Repository
                 Value = ParameterDirection.ReturnValue
             };
             command.Parameters.Add(IdParam);
-            orderItem.Id = Convert.ToInt32(IdParam.Value.ToString());
             var result = command.ExecuteNonQuery();
+            orderItem.Id = Convert.ToInt32(IdParam.Value.ToString());
             return result > 0;
         }
 

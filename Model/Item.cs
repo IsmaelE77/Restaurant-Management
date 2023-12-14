@@ -10,7 +10,7 @@ namespace Restaurant_Management.Model
         public string Description { get; set; } 
         public decimal Price { get; set; }  
         public DateTime Added { get; set; } 
-        public int Rating { get; set; }
+        public decimal Rating { get; set; }
         public int CategoryId { get; set; }
         public List<Item_Ingredient> Item_Ingredients { get; set; } = [];
         public override string ToString()

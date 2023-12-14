@@ -19,20 +19,22 @@ namespace Restaurant_Management.Repository
 
             using OracleCommand command = new(
                 "INSERT INTO \"Item\" (Title, Description, Price, Added, Rating, Category_Id) " +
-                "VALUES (:title, :description, :price, :added, :rating, :categoryId) RETURNING Id into :Id", connection);
-            command.Parameters.Add("title", OracleDbType.Varchar2).Value = item.Title;
-            command.Parameters.Add("description", OracleDbType.Varchar2).Value = item.Description;
-            command.Parameters.Add("price", OracleDbType.Decimal).Value = item.Price;
-            command.Parameters.Add("added", OracleDbType.TimeStamp).Value = item.Added;
-            command.Parameters.Add("rating", OracleDbType.Int16).Value = item.Rating;
-            command.Parameters.Add("categoryId", OracleDbType.Int32).Value = item.CategoryId;
-            OracleParameter IdParam = new(":Id", OracleDbType.Int32)
+                "VALUES (:title, :description, :price, :added, :rating, :categoryId) RETURNING Id into :pId", connection);
+            command.Parameters.Add(new OracleParameter(":title", item.Title));
+            command.Parameters.Add(new OracleParameter(":description", item.Description));
+            command.Parameters.Add(new OracleParameter(":price", item.Price));
+            OracleParameter dateParam = new(":added", OracleDbType.TimeStamp);
+            dateParam.Value = item.Added;
+            command.Parameters.Add(dateParam);
+            command.Parameters.Add(new OracleParameter(":rating", item.Rating));
+            command.Parameters.Add(new OracleParameter(":categoryId",item.CategoryId));
+            OracleParameter IdParam = new(":pId", OracleDbType.Int32)
             {
                 Value = ParameterDirection.ReturnValue
             };
             command.Parameters.Add(IdParam);
-            item.Id = Convert.ToInt32(IdParam.Value.ToString());
             var result = command.ExecuteNonQuery();
+            item.Id = Convert.ToInt32(IdParam.Value.ToString());
             return result > 0;
         }
 
@@ -113,14 +115,15 @@ namespace Restaurant_Management.Repository
             using OracleCommand command = new(
                 "UPDATE \"Item\" SET Title = :title, Description = :description, Price = :price, " +
                 "Added = :added, Rating = :rating, Category_Id = :categoryId WHERE Id = :itemId", connection);
-            command.Parameters.Add("title", OracleDbType.Varchar2).Value = item.Title;
-            command.Parameters.Add("description", OracleDbType.Varchar2).Value = item.Description;
-            command.Parameters.Add("price", OracleDbType.Decimal).Value = item.Price;
-            command.Parameters.Add("added", OracleDbType.TimeStamp).Value = item.Added;
-            command.Parameters.Add("rating", OracleDbType.Int16).Value = item.Rating;
-            command.Parameters.Add("categoryId", OracleDbType.Int32).Value = item.CategoryId;
-            command.Parameters.Add("itemId", OracleDbType.Int32).Value = item.Id;
-
+            command.Parameters.Add(new OracleParameter(":title", item.Title));
+            command.Parameters.Add(new OracleParameter(":description",  item.Description));
+            command.Parameters.Add(new OracleParameter(":price", item.Price));
+            OracleParameter dateParam = new(":added", OracleDbType.TimeStamp);
+            dateParam.Value = item.Added;
+            command.Parameters.Add(dateParam);
+            command.Parameters.Add(new OracleParameter(":rating", item.Rating));
+            command.Parameters.Add(new OracleParameter(":categoryId",item.CategoryId));
+            command.Parameters.Add(new OracleParameter(":itemId",item.Id));
             int rowsAffected = command.ExecuteNonQuery();
             return rowsAffected > 0;
         }

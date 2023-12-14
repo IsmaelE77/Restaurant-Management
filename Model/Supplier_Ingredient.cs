@@ -4,6 +4,7 @@ public class Supplier_Ingredient(int? _Id = null, decimal _Price = 0, int _Quant
 {
     public int? Id { get; set; } = _Id;
     public decimal Price { get; set; } = _Price;
+    public DateTime Date { get; set; } 
     public int Quantity { get; set; } = _Quantity;
     public int Supplier_Id { get; set; } = _Supplier_Id;
     public int Ingredient_Id { get; set; } = _Ingredient_Id;

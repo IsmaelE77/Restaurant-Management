@@ -29,10 +29,9 @@ namespace Restaurant_Management.Repository
                 Direction = ParameterDirection.ReturnValue
             };
             command.Parameters.Add(IdParam);
-
-            ingredient.Id = Convert.ToInt32(IdParam.Value.ToString());
-
             var result = command.ExecuteNonQuery();
+            ingredient.Id = Convert.ToInt32(IdParam.Value.ToString());
+        
             return result > 0;
         }
 
