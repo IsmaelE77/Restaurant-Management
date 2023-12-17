@@ -1,48 +1,16 @@
-namespace Restaurant_Management.Model
+namespace Restaurant_Management.Model;
+
+public class Order
 {
-    public class Order
-    {
-        [Key]
-        public int? Id { get; set; }
-        [Required(ErrorMessage = "{0} is required")]
-        [Timestamp]
-        public DateTime Date { get; set; }
-        [Range(0, double.MaxValue, ErrorMessage = "Price must be a non-negative value")]
-        public decimal Price { get; set; }
-        [Required(ErrorMessage = "{0} is required")]
-        public int EmployeeId { get; set; }
-        [Required(ErrorMessage = "{0} is required")]
-        public int TableId { get; set; }
-        public int? ReceiptId { get; set; }  
+    public int? Id { get; set; }
+    public DateTime Date { get; set; }
+    public decimal Price { get; set; }
+    public int Employee_Id { get; set; }
+    public int Table_Id { get; set; }
+    public int? Receipt_Id { get; set; }
+    public List<Order_Item> Order_Items { get; set; } = [];
 
-        [Required(ErrorMessage = "At least one order item is required")]
-        [MinLength(1, ErrorMessage = "At least one order item is required")]    
-        public List<OrderItem> OrderItems {get; set;}
-
-        public override string ToString()
-        {
-            return $"Order(Id: {Id}, Date: {Date}, Price: {Price}, EmployeeId: {EmployeeId}, TableId: {TableId}, " +
-                   $"ReceiptId: {ReceiptId}, OrderItems: {OrderItemsToString()})";
-        }
-
-        private string OrderItemsToString()
-        {
-            if (OrderItems != null && OrderItems.Count > 0)
-            {
-                var orderItemsString = "\n[";
-
-                foreach (var orderItem in OrderItems)
-                {
-                    orderItemsString += "\n"+"   "+ orderItem.ToString();
-                }
-
-                // Remove the trailing comma and space
-                orderItemsString = orderItemsString.TrimEnd(',', ' ') + "\n]";
-                
-                return orderItemsString;
-            }
-
-            return "[]";
-        }
-    }
+    public override string ToString() =>
+        $"Order(Id: {Id}, Date: {Date}, Price: {Price}, Employee_Id: {Employee_Id}, Table_Id: {Table_Id}, " +
+               $"Receipt_Id: {Receipt_Id}, Order_Items: {Order_Items.ConvertToString()})";
 }

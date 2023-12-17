@@ -1,122 +1,71 @@
 ﻿namespace Restaurant_Management.Repository;
 
-public class Supplier_IngredientRepository(string connectionString) : ISupplier_Ingredient
+public class Supplier_IngredientRepository(string _connectionString) : ISupplier_Ingredient
 {
     public bool Add(Supplier_Ingredient item)
     {
-        using var con = new OracleConnection(connectionString);
+        using var con = new OracleConnection(_connectionString);
         con.Open();
-        using OracleCommand command = new OracleCommand(
-            "INSERT INTO \"Supplier_Ingredient\"(Ingredient_Id, Supplier_Id, \"Date\", Quantity, Price) " +
-            "VALUES (:pIngredientId, :pSupplierId, :pDate, :pQuantity, :pPrice) RETURNING Id INTO :pId", con);
-
-        command.Parameters.Add(new OracleParameter(":pIngredientId", item.Ingredient_Id));
-        command.Parameters.Add(new OracleParameter(":pSupplierId", item.Supplier_Id));
-        OracleParameter dateParam = new(":pDate", OracleDbType.TimeStamp);
-        dateParam.Value = item.Date;
-        command.Parameters.Add(dateParam);
-        command.Parameters.Add(new OracleParameter(":pQuantity", item.Quantity));
-        command.Parameters.Add(new OracleParameter(":pPrice", item.Price));
-        OracleParameter IdParam = new(":pId", OracleDbType.Int32)
-        {
-            Value = ParameterDirection.ReturnValue
-        };
-        command.Parameters.Add(IdParam);
-        int result = command.ExecuteNonQuery();
-        item.Id = Convert.ToInt32(IdParam.Value.ToString());
+        using var cmd = new OracleCommand(
+            "INSERT INTO \"Supplier_Ingredient\" (Ingredient_Id, Supplier_Id, \"Date\", Quantity, Price) " +
+            "VALUES (:IngredientId, :SupplierId, :pDate, :Quantity, :Price) RETURNING Id INTO :Id", con);
+        cmd.Parameters.Add(new OracleParameter(":IngredientId", item.Ingredient_Id));
+        cmd.Parameters.Add(new OracleParameter(":SupplierId", item.Supplier_Id));
+        cmd.Parameters.Add(new OracleParameter(":pDate", OracleDbType.TimeStamp) { Value = item.Date });
+        cmd.Parameters.Add(new OracleParameter(":Quantity", item.Quantity));
+        cmd.Parameters.Add(new OracleParameter(":Price", item.Price));
+        cmd.Parameters.Add(new OracleParameter(":Id", OracleDbType.Int32, ParameterDirection.ReturnValue));
+        int result = cmd.ExecuteNonQuery();
+        OracleDecimal oracleDecimalId = (OracleDecimal)cmd.Parameters[":Id"].Value;
+        item.Id = oracleDecimalId.ToInt32();
         return result > 0;
     }
 
-    public Supplier_Ingredient? Get(int Id)
+    public Supplier_Ingredient? Get(int id)
     {
-        using var con = new OracleConnection(connectionString);
+        using var con = new OracleConnection(_connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Select * from \"Supplier_Ingredient\" where Id='{Id}'", con);
+        using var cmd = new OracleCommand("SELECT * FROM \"Supplier_Ingredient\" WHERE Id = :Id", con);
+        cmd.Parameters.Add(new OracleParameter(":Id", id));
         using var reader = cmd.ExecuteReader();
-        reader.Read();
-        var price = reader.GetDecimal(reader.GetOrdinal("Price"));
-        var quantity = reader.GetInt32(reader.GetOrdinal("Quantity"));
-        var sup_Id = reader.GetInt32(reader.GetOrdinal("Supplier_Id"));
-        var ing_Id = reader.GetInt32(reader.GetOrdinal("Ingredient_Id"));
-        var date = Convert.ToDateTime(reader["\"Date\""]);
-        var supplier_Ingredient = new Supplier_Ingredient(Id, price, quantity, sup_Id, ing_Id)
-        {
-            Date = date
-        };
-        return supplier_Ingredient;
+        return reader.Read() ? MapSupplierIngredientFromReader(reader) : null;
     }
 
     public IEnumerable<Supplier_Ingredient> GetAll()
     {
-        using var con = new OracleConnection(connectionString);
+        using var con = new OracleConnection(_connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Select * from \"Supplier_Ingredient\"", con);
+        using var cmd = new OracleCommand("SELECT * FROM \"Supplier_Ingredient\"", con);
         using var reader = cmd.ExecuteReader();
-        while (reader.Read())
-        {
-            var Id = reader.GetInt32(reader.GetOrdinal("Id"));
-            var price = reader.GetDecimal(reader.GetOrdinal("Price"));
-            var quantity = reader.GetInt32(reader.GetOrdinal("Quantity"));
-            var sup_Id = reader.GetInt32(reader.GetOrdinal("Supplier_Id"));
-            var ing_Id = reader.GetInt32(reader.GetOrdinal("Ingredient_Id"));
-            var date = Convert.ToDateTime(reader["\"Date\""]);
-            var supplier_Ingredient = new Supplier_Ingredient(Id, price, quantity, sup_Id, ing_Id)
-            {
-                Date = date
-            };
-            yield return supplier_Ingredient;
-        }
+        while (reader.Read()) yield return MapSupplierIngredientFromReader(reader);
     }
 
-    public IEnumerable<Supplier_Ingredient> GetSupplier_IngredientsForIngredients(int Ingredient_Id)
+    public IEnumerable<Supplier_Ingredient> GetSupplier_IngredientsForIngredients(int ingredientId)
     {
-        using var con = new OracleConnection(connectionString);
+        using var con = new OracleConnection(_connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Select * from \"Supplier_Ingredient\" where Ingredient_Id='{Ingredient_Id}'", con);
+        using var cmd = new OracleCommand("SELECT * FROM \"Supplier_Ingredient\" WHERE Ingredient_Id = :IngredientId", con);
+        cmd.Parameters.Add(new OracleParameter(":IngredientId", ingredientId));
         using var reader = cmd.ExecuteReader();
-        while (reader.Read())
-        {
-            var Id = reader.GetInt32(reader.GetOrdinal("Id"));
-            var price = reader.GetDecimal(reader.GetOrdinal("Price"));
-            var quantity = reader.GetInt32(reader.GetOrdinal("Quantity"));
-            var sup_Id = reader.GetInt32(reader.GetOrdinal("Supplier_Id"));
-            var ing_Id = reader.GetInt32(reader.GetOrdinal("Ingredient_Id"));
-            var date = Convert.ToDateTime(reader["\"Date\""]);
-            var supplier_Ingredient = new Supplier_Ingredient(Id, price, quantity, sup_Id, ing_Id)
-            {
-                Date = date
-            };
-            yield return supplier_Ingredient;
-        }
+        while (reader.Read()) yield return MapSupplierIngredientFromReader(reader);
     }
 
-    public IEnumerable<Supplier_Ingredient> GetSupplier_IngredientsForSuppliers(int Supplier_Id)
+    public IEnumerable<Supplier_Ingredient> GetSupplier_IngredientsForSuppliers(int supplierId)
     {
-        using var con = new OracleConnection(connectionString);
+        using var con = new OracleConnection(_connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Select * from \"Supplier_Ingredient\" where Supplier_Id='{Supplier_Id}'", con);
+        using var cmd = new OracleCommand("SELECT * FROM \"Supplier_Ingredient\" WHERE Supplier_Id = :SupplierId", con);
+        cmd.Parameters.Add(new OracleParameter(":SupplierId", supplierId));
         using var reader = cmd.ExecuteReader();
-        while (reader.Read())
-        {
-            var Id = reader.GetInt32(reader.GetOrdinal("Id"));
-            var price = reader.GetDecimal(reader.GetOrdinal("Price"));
-            var quantity = reader.GetInt32(reader.GetOrdinal("Quantity"));
-            var sup_Id = reader.GetInt32(reader.GetOrdinal("Supplier_Id"));
-            var ing_Id = reader.GetInt32(reader.GetOrdinal("Ingredient_Id"));
-            var date = Convert.ToDateTime(reader["\"Date\""]);
-            var supplier_Ingredient = new Supplier_Ingredient(Id, price, quantity, sup_Id, ing_Id)
-            {
-                Date = date
-            };
-            yield return supplier_Ingredient;
-        }
+        while (reader.Read()) yield return MapSupplierIngredientFromReader(reader);
     }
 
-    public decimal GetTotal_Pay(int Supplier_Id)
+    public decimal GetTotal_Pay(int supplierId)
     {
-        using var con = new OracleConnection(connectionString);
+        using var con = new OracleConnection(_connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Select Price from \"Supplier_Ingredient\" where Supplier_Id='{Supplier_Id}'", con);
+        using var cmd = new OracleCommand("SELECT Price FROM \"Supplier_Ingredient\" WHERE Supplier_Id = :SupplierId", con);
+        cmd.Parameters.Add(new OracleParameter(":SupplierId", supplierId));
         using var reader = cmd.ExecuteReader();
         decimal total = 0;
         while (reader.Read())
@@ -126,11 +75,12 @@ public class Supplier_IngredientRepository(string connectionString) : ISupplier_
         return total;
     }
 
-    public int GetTotal_Quantity(int Ingredient_Id)
+    public int GetTotal_Quantity(int ingredientId)
     {
-        using var con = new OracleConnection(connectionString);
+        using var con = new OracleConnection(_connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Select Quantity from \"Supplier_Ingredient\" where Ingredient_Id='{Ingredient_Id}'", con);
+        using var cmd = new OracleCommand("SELECT Quantity FROM \"Supplier_Ingredient\" WHERE Ingredient_Id = :IngredientId", con);
+        cmd.Parameters.Add(new OracleParameter(":IngredientId", ingredientId));
         using var reader = cmd.ExecuteReader();
         int total = 0;
         while (reader.Read())
@@ -140,21 +90,39 @@ public class Supplier_IngredientRepository(string connectionString) : ISupplier_
         return total;
     }
 
-    public bool Remove(int Id)
+    public bool Remove(int id)
     {
-        using var con = new OracleConnection(connectionString);
+        using var con = new OracleConnection(_connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Delete from \"Supplier_Ingredient\" where Id='{Id}'", con);
+        using var cmd = new OracleCommand("DELETE FROM \"Supplier_Ingredient\" WHERE Id = :Id", con);
+        cmd.Parameters.Add(new OracleParameter(":Id", id));
         return cmd.ExecuteNonQuery() > 0;
     }
 
     public bool Update(Supplier_Ingredient item)
     {
-        using var con = new OracleConnection(connectionString);
+        using var con = new OracleConnection(_connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Update \"Supplier_Ingredient\"  Set Price='{item.Price}', " +
-            $"Quantity='{item.Quantity}', Supplier_Id='{item.Supplier_Id}', Ingredient_Id='{item.Ingredient_Id}'" +
-            $" where Id='{item.Id}'", con);
+        using var cmd = new OracleCommand(
+            "UPDATE \"Supplier_Ingredient\" SET Price = :Price, Quantity = :Quantity, Supplier_Id = :SupplierId, Ingredient_Id = :IngredientId " +
+            "WHERE Id = :Id", con);
+        cmd.Parameters.Add(new OracleParameter(":Price", item.Price));
+        cmd.Parameters.Add(new OracleParameter(":Quantity", item.Quantity));
+        cmd.Parameters.Add(new OracleParameter(":SupplierId", item.Supplier_Id));
+        cmd.Parameters.Add(new OracleParameter(":IngredientId", item.Ingredient_Id));
+        cmd.Parameters.Add(new OracleParameter(":Id", item.Id));
         return cmd.ExecuteNonQuery() > 0;
+    }
+    private static Supplier_Ingredient MapSupplierIngredientFromReader(OracleDataReader reader)
+    {
+        return new Supplier_Ingredient
+        {
+            Id = Convert.ToInt32(reader["Id"]),
+            Price = Convert.ToDecimal(reader["Price"]),
+            Quantity = Convert.ToInt32(reader["Quantity"]),
+            Ingredient_Id = Convert.ToInt32(reader["Ingredient_Id"]),
+            Supplier_Id = Convert.ToInt32(reader["Supplier_Id"]),
+            Date = Convert.ToDateTime(reader["Date"]),
+        };
     }
 }

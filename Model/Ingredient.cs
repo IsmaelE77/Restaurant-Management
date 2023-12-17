@@ -7,6 +7,6 @@ public class Ingredient
     public decimal Quantity { get; set; }
     public List<Supplier_Ingredient> Suppliers_Ingredients { get; set; } = [];
     public List<Item_Ingredient> Item_Ingredients { get; set; } = [];
-    public override string ToString() => $"Ingredient(Id: {Id}, Name: {Name}, Quantity: {Quantity}, " +
-        $"Suppliers_Ingredients {Suppliers_Ingredients.ConvertToString()})";
+    public override string ToString() =>
+        $"Ingredient(Id: {Id}, Name: {Name}, Quantity: {Quantity}, Suppliers_Ingredients {Suppliers_Ingredients.ConvertToString()})";
 }

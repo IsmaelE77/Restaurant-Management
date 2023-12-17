@@ -140,11 +140,9 @@ public class Database
 
     private static bool TableExists(OracleConnection connection ,string tableName)
     {
-        using (OracleCommand command = new($"SELECT COUNT(*) FROM USER_TABLES WHERE TABLE_NAME = '{tableName}'", connection))
-        {
-            int count = Convert.ToInt32(command.ExecuteScalar());
-            return count > 0;
-        }
+        using OracleCommand command = new($"SELECT COUNT(*) FROM USER_TABLES WHERE TABLE_NAME = '{tableName}'", connection);
+        int count = Convert.ToInt32(command.ExecuteScalar());
+        return count > 0;
     }
 
     private static void AddForeignKeyConstraint(OracleConnection connection, string tableName, string constraintName, string columnName, string referencedTable, string referencedColumnName , bool OnDeleteCascade)
@@ -157,7 +155,9 @@ public class Database
             else
                 addForeignKeyQuery = $"ALTER TABLE \"{tableName}\" ADD CONSTRAINT {constraintName} FOREIGN KEY ({columnName}) REFERENCES \"{referencedTable}\"({referencedColumnName})";
             ExecuteQuery(connection, addForeignKeyQuery);
-        }else{
+        }
+        else 
+        {
             Console.WriteLine($"constraint {constraintName} found before");
         }
     }
@@ -173,10 +173,7 @@ public class Database
 
     private static void ExecuteQuery(OracleConnection connection, string query)
     {
-        using (OracleCommand command = new(query, connection))
-        {
-            command.ExecuteNonQuery();
-        }
+        using OracleCommand command = new(query, connection);
+        command.ExecuteNonQuery();
     }
-
 }

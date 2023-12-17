@@ -1,92 +1,88 @@
-﻿using System.Data;
+﻿namespace Restaurant_Management.Repository;
 
-namespace Restaurant_Management.Repository;
-
-public class SupplierRepository(string connectionString) : ISupplier
+public class SupplierRepository(string _connectionString, ISupplier_Ingredient _supplier_Ingredient) : ISupplier
 {
     public bool Add(Supplier supplier)
     {
-        using var con = new OracleConnection(connectionString);
+        using var con = new OracleConnection(_connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"insert into \"Supplier\"(Full_Name, Phone_Number) Values('{supplier.Full_Name}', '{supplier.Phone_Number}') RETURNING Id into :Id", con);
-        OracleParameter IdParam = new(":Id", OracleDbType.Int32)
-        {
-            Value = ParameterDirection.ReturnValue
-        };
-        cmd.Parameters.Add(IdParam);
+        using var cmd = new OracleCommand("INSERT INTO \"Supplier\" (Full_Name, Phone_Number) VALUES (:FullName, :PhoneNumber) RETURNING Id INTO :Id", con);
+        cmd.Parameters.Add(new OracleParameter(":FullName", supplier.Full_Name));
+        cmd.Parameters.Add(new OracleParameter(":PhoneNumber", supplier.Phone_Number));
+        cmd.Parameters.Add(new OracleParameter(":Id", OracleDbType.Int32, ParameterDirection.ReturnValue));
         int result = cmd.ExecuteNonQuery();
-        supplier.Id = Convert.ToInt32(IdParam.Value.ToString());
+        OracleDecimal oracleDecimalId = (OracleDecimal)cmd.Parameters[":Id"].Value;
+        supplier.Id = oracleDecimalId.ToInt32();
         return result > 0;
     }
 
-    public Supplier? Get(int Id)
+    public Supplier? Get(int id)
     {
-        using var con = new OracleConnection(connectionString);
+        using var con = new OracleConnection(_connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Select * from \"Supplier\" where Id='{Id}'", con);
+        using var cmd = new OracleCommand("SELECT * FROM \"Supplier\" WHERE Id = :Id", con);
+        cmd.Parameters.Add(new OracleParameter(":Id", id));
         using var reader = cmd.ExecuteReader();
-        reader.Read();
-        var Full_Name = reader.GetString(reader.GetOrdinal("Full_Name"));
-        var Phone_Number = reader.GetString(reader.GetOrdinal("Phone_Number"));
-        return new(Id, Full_Name, Phone_Number);
+        return reader.Read() ? MapSupplierFromReader(reader, _supplier_Ingredient) : null;
     }
 
     public Supplier? GetSupplierWithHighestPaymentForYear(int year)
     {
-        using OracleConnection connection = new OracleConnection(connectionString);
+        using var connection = new OracleConnection(_connectionString);
         connection.Open();
-
-        using OracleCommand command = new OracleCommand(
-            $"SELECT \"Supplier\".Id, \"Supplier\".Full_Name, \"Supplier\".Phone_Number, SUM(\"Supplier_Ingredient\".Price) AS TotalPayment " +
-            $"FROM \"Supplier\" " +
-            $"JOIN \"Supplier_Ingredient\" ON \"Supplier\".Id = \"Supplier_Ingredient\".Supplier_Id " +
-            $"WHERE EXTRACT(YEAR FROM \"Supplier_Ingredient\".\"Date\") = :year " +
-            $"GROUP BY \"Supplier\".Id, \"Supplier\".Full_Name, \"Supplier\".Phone_Number " +
-            $"ORDER BY TotalPayment DESC " +
-            $"FETCH FIRST 1 ROW ONLY", connection);
+        using var command = new OracleCommand(
+            "SELECT \"Supplier\".Id, \"Supplier\".Full_Name, \"Supplier\".Phone_Number, SUM(\"Supplier_Ingredient\".Price) AS TotalPayment " +
+            "FROM \"Supplier\" " +
+            "JOIN \"Supplier_Ingredient\" ON \"Supplier\".Id = \"Supplier_Ingredient\".Supplier_Id " +
+            "WHERE EXTRACT(YEAR FROM \"Supplier_Ingredient\".\"Date\") = :year " +
+            "GROUP BY \"Supplier\".Id, \"Supplier\".Full_Name, \"Supplier\".Phone_Number " +
+            "ORDER BY TotalPayment DESC " +
+            "FETCH FIRST 1 ROW ONLY", connection);
         command.Parameters.Add("year", OracleDbType.Int32).Value = year;
-
-        using OracleDataReader reader = command.ExecuteReader();
-        if (reader.Read())
-        {
-            int id = reader.GetInt32(reader.GetOrdinal("Id"));
-            string fullName = reader.GetString(reader.GetOrdinal("Full_Name"));
-            string phoneNumber = reader.GetString(reader.GetOrdinal("Phone_Number"));
-            return new(id, fullName, phoneNumber);
-        }
-
-        return null;
+        using var reader = command.ExecuteReader();
+        return reader.Read() ? MapSupplierFromReader(reader, _supplier_Ingredient) : null;
     }
-
 
     public IEnumerable<Supplier> GetAll()
     {
-        using var con = new OracleConnection(connectionString);
+        using var con = new OracleConnection(_connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Select * from \"Supplier\"", con);
+        using var cmd = new OracleCommand("SELECT * FROM \"Supplier\"", con);
         using var reader = cmd.ExecuteReader();
-        while (reader.Read())
-        {
-            var Id = reader.GetInt32(reader.GetOrdinal("Id"));
-            var Full_Name = reader.GetString(reader.GetOrdinal("Full_Name"));
-            var Phone_Number = reader.GetString(reader.GetOrdinal("Phone_Number"));
-            yield return new(Id, Full_Name, Phone_Number);
-        }
+        while (reader.Read()) yield return MapSupplierFromReader(reader, _supplier_Ingredient);
     }
 
-    public bool Remove(int Id)
+    public bool Remove(int id)
     {
-        using var con = new OracleConnection(connectionString);
+        using var con = new OracleConnection(_connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Delete from \"Supplier\" where Id='{Id}'", con);
+        using var cmd = new OracleCommand("DELETE FROM \"Supplier\" WHERE Id = :Id", con);
+        cmd.Parameters.Add(new OracleParameter(":Id", id));
         return cmd.ExecuteNonQuery() > 0;
     }
 
     public bool Update(Supplier supplier)
     {
-        using var con = new OracleConnection(connectionString);
+        using var con = new OracleConnection(_connectionString);
         con.Open();
-        using var cmd = new OracleCommand($"Update \"Table\" Set Full_Name='{supplier.Full_Name}', Phone_Number='{supplier.Phone_Number}'' where Id='{supplier.Id}'", con);
+        using var cmd = new OracleCommand("UPDATE \"Supplier\" SET Full_Name = :FullName, Phone_Number = :PhoneNumber WHERE Id = :Id", con);
+        cmd.Parameters.Add(new OracleParameter(":FullName", supplier.Full_Name));
+        cmd.Parameters.Add(new OracleParameter(":PhoneNumber", supplier.Phone_Number));
+        cmd.Parameters.Add(new OracleParameter(":Id", supplier.Id));
+        foreach (var sup_Ing in supplier.Suppliers_Ingredients)
+        {
+            _supplier_Ingredient.Update(sup_Ing);
+        }
         return cmd.ExecuteNonQuery() > 0;
+    }
+    private static Supplier MapSupplierFromReader(OracleDataReader reader, ISupplier_Ingredient _supplier_Ingredient)
+    {
+        return new Supplier
+        {
+            Id = Convert.ToInt32(reader["Id"]),
+            Full_Name = reader["Full_Name"].ToString() ?? "",
+            Phone_Number = reader["Phone_Number"].ToString() ?? "",
+            Suppliers_Ingredients = _supplier_Ingredient.GetSupplier_IngredientsForSuppliers(Convert.ToInt32(reader["Id"])).ToList()
+        };
     }
 }
