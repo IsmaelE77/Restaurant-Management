@@ -24,7 +24,6 @@ public class DataSeeder(IEmployee _employeeRepository, IEmployee_WorkDay _employ
 
     private void SeedItemIngredients()
     {
-        if (_itemIngredientRepository.GetAll().Count() != 0) return;
         _itemIngredientRepository.Add(new Item_Ingredient { Item_Id = 1, Ingredient_Id = 1 });
         _itemIngredientRepository.Add(new Item_Ingredient { Item_Id = 1, Ingredient_Id = 3 });
         _itemIngredientRepository.Add(new Item_Ingredient { Item_Id = 2, Ingredient_Id = 3 });
@@ -38,7 +37,6 @@ public class DataSeeder(IEmployee _employeeRepository, IEmployee_WorkDay _employ
 
     private void SeedEmployees()
     {
-        if (_employeeRepository.GetAll().Count() != 0) return;
         _employeeRepository.Add(new Employee
         {
             FirstName = "Nader",
@@ -86,7 +84,6 @@ public class DataSeeder(IEmployee _employeeRepository, IEmployee_WorkDay _employ
 
     private void SeedSections()
     {
-        if (_sectionRepository.GetAll().Count() != 0) return;
         _sectionRepository.Add(new Section
         {
             Name = "Kitchen"
@@ -111,7 +108,6 @@ public class DataSeeder(IEmployee _employeeRepository, IEmployee_WorkDay _employ
 
     private void SeedItems()
     {
-        if (_itemRepository.GetAll().Count() != 0) return;
         _itemRepository.Add(new Item
         {
             Title = "Burger",
@@ -157,7 +153,6 @@ public class DataSeeder(IEmployee _employeeRepository, IEmployee_WorkDay _employ
 
     private void SeedTables()
     {
-        if (_tableRepository.GetAll().Count() != 0) return;
         for (int i = 1; i <= 4; i++)
         {
             _tableRepository.Add(new Table { Number = i, Status = i % 2 == 0 ? "Available" : "Unavailable" });
@@ -167,7 +162,6 @@ public class DataSeeder(IEmployee _employeeRepository, IEmployee_WorkDay _employ
 
     private void SeedCategories()
     {
-        if (_categoryRepository.GetAll().Count() != 0) return;
         _categoryRepository.Add(new Category { Name = "Appetizers" });
         _categoryRepository.Add(new Category { Name = "Sides" });
         _categoryRepository.Add(new Category { Name = "Mains" });
@@ -178,7 +172,6 @@ public class DataSeeder(IEmployee _employeeRepository, IEmployee_WorkDay _employ
 
     private void SeedSuppliers()
     {
-        if (_supplierRepository.GetAll().Count() != 0) return;
         _supplierRepository.Add(new Supplier { Full_Name = "Abu_Andrew", Phone_Number = "0946145738" });
         _supplierRepository.Add(new Supplier { Full_Name = "Mr_Sure21", Phone_Number = "0965490736" });
         _supplierRepository.Add(new Supplier { Full_Name = "Ismael", Phone_Number = "0933987231" });
@@ -188,7 +181,6 @@ public class DataSeeder(IEmployee _employeeRepository, IEmployee_WorkDay _employ
 
     private void SeedIngredients()
     {
-        if (_ingredientRepository.GetAll().Count() != 0) return;
         _ingredientRepository.Add(new Ingredient
         {
             Name = "Ground Beef",
@@ -217,7 +209,6 @@ public class DataSeeder(IEmployee _employeeRepository, IEmployee_WorkDay _employ
 
     private void SeedEmployeeWorkDays()
     {
-        if (_employeeWorkDayRepository.GetAll().Count() != 0) return;
         _employeeWorkDayRepository.Add(new Employee_WorkDay
         {
             Date = DateTime.Now.Date,
@@ -262,7 +253,6 @@ public class DataSeeder(IEmployee _employeeRepository, IEmployee_WorkDay _employ
 
     private void SeedOrders()
     {
-        if (_orderRepository.GetAll().Count() != 0) return;
         _orderRepository.Add(new Order
         {
             Date = DateTime.Now,
@@ -299,7 +289,6 @@ public class DataSeeder(IEmployee _employeeRepository, IEmployee_WorkDay _employ
 
     private void SeedOrderItems()
     {
-        if (_orderItemRepository.GetAll().Count() != 0) return;
         _orderItemRepository.Add(new Order_Item
         {
             Quantity = 2,
@@ -336,7 +325,6 @@ public class DataSeeder(IEmployee _employeeRepository, IEmployee_WorkDay _employ
 
     private void SeedSupplierIngredients()
     {
-        if (_supplierIngredientRepository.GetAll().Count() != 0) return;
         _supplierIngredientRepository.Add(new Supplier_Ingredient
         {
             Ingredient_Id = 1,
