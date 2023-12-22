@@ -73,6 +73,18 @@ public class OrderRepository(string _connectionString, IOrder_Item _order_Item) 
         while (reader.Read()) orders.Add(MapOrderFromReader(reader, _order_Item));
         return orders;
     }
+
+    public decimal GetTotalAmountServedByEmployeeInYear(int employeeId, int year)
+    {
+        using OracleConnection connection = new OracleConnection(_connectionString);
+        connection.Open();
+        string query = "SELECT SUM(Price) FROM \"Order\" WHERE Employee_Id = :Employee_Id AND EXTRACT(YEAR FROM \"Date\") = :Year";
+        using OracleCommand command = new(query, connection);
+        command.Parameters.Add(new OracleParameter(":Employee_Id", employeeId));
+        command.Parameters.Add(new OracleParameter(":Year", year));
+        object result = command.ExecuteScalar();
+        return result != DBNull.Value ? Convert.ToDecimal(result) : 0;
+    }
     
     public IEnumerable<Order> GetAllByReceipt(int Receipt_Id)
     {

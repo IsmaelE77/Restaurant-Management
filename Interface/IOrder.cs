@@ -6,5 +6,7 @@ namespace Restaurant_Management.Interface
         IEnumerable<Order> GetAllByEmployeeAndYear(int employeeId, int year);
         IEnumerable<Order> GetAllByReceipt(int Receipt_Id);
         IEnumerable<Order> GetAllByTable(int Table_Id);
+
+        decimal GetTotalAmountServedByEmployeeInYear(int employeeId, int year);
     }
 }
