@@ -3,11 +3,11 @@
 public class Receipt
 {
     public int Id { get; set; }
-    public DateTime Date { get; set; }
-    public decimal Sub_Total { get; set; }
-    public decimal Taxes { get; set; }
-    public decimal Discount { get; set; }
-    public decimal Total { get; set; }
+    public DateTime Date { get; set; } = DateTime.Now;
+    public decimal Sub_Total { get; set; } = 0;
+    public decimal Taxes { get; set; } = 0;
+    public decimal Discount { get; set; } = 0;
+    public decimal Total { get; set; } = 0;
     public int Table_Id { get; set; }
     public List<Order> Orders { get; set; } = [];
     public override string ToString() =>
